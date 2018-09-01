@@ -8,22 +8,32 @@ Vue.use(Vuex);
 export default new Vuex.Store({
     state: {
         token: '',
-        repositories: [],
+        repositories: {},
     },
     mutations: {
         saveToken(state, token) {
             state.token = token;
         },
         setRepositories(state, repositories) {
-            let reposTmp = [];
             for (let key in repositories) {
-                reposTmp.push({
-                    id: repositories[key].id,
-                    name: repositories[key].full_name,
-                    private: repositories[key].private,
-                });
+                const id = repositories[key].id;
+                if (!state.repositories.hasOwnProperty(id)) {
+                    const item = {
+                        name: repositories[key].full_name,
+                        private: repositories[key].private,
+                        branches: []
+                    };
+                    Vue.set(state.repositories, id, item);
+                }
             }
-            state.repositories = reposTmp;
+        },
+        setBranchesForRepository(state, data) {
+            let branchesTmp = [];
+            for (let key in data.branchData) {
+                branchesTmp.push(data.branchData[key].name);
+            }
+
+            state.repositories[data.repositoryId].branches = branchesTmp;
         }
     },
     actions: {
@@ -33,11 +43,10 @@ export default new Vuex.Store({
             }
             return commit('saveToken', token);
         },
-        loadRepositories({state, commit}) {
+        loadRepositories({dispatch, state, commit}) {
             if (typeof  state.token !== 'string') {
                 return;
             }
-
             if (state.token.length === 0) {
                 return;
             }
@@ -50,7 +59,46 @@ export default new Vuex.Store({
                     type: 'all'
                 }
             })
-                .then(response => commit('setRepositories', response.data))
+                .then(response => {
+                    commit('setRepositories', response.data);
+                    dispatch('loadBranchesForAllRepositories');
+                })
+                .catch((error) => console.log(error));
+        },
+        loadBranchesForAllRepositories({dispatch, state}) {
+            if (typeof  state.token !== 'string') {
+                return;
+            }
+            if (state.token.length === 0) {
+                return;
+            }
+
+            for (let key in state.repositories) {
+                if (!state.repositories.hasOwnProperty(key)) {
+                    continue;
+                }
+
+                dispatch('loadBranches', key);
+            }
+        },
+        loadBranches({state, commit}, repositoryId) {
+            if (typeof  state.token !== 'string') {
+                return;
+            }
+            if (state.token.length === 0) {
+                return;
+            }
+            if (!state.repositories.hasOwnProperty(repositoryId)) {
+                return;
+            }
+
+            const url = 'https://api.github.com/repos/' + state.repositories[repositoryId].name + '/branches';
+
+            return axios.get(url, {params: {access_token: state.token}})
+                .then(response => commit('setBranchesForRepository', {
+                    branchData: response.data,
+                    repositoryId: repositoryId
+                }))
                 .catch((error) => console.log(error));
         },
 

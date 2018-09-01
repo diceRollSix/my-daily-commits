@@ -4,6 +4,11 @@
                 v-for="repo in repositories"
                 :key="repo.id"
         >{{ repo.name }}
+            <div
+                    v-for="branch in repo.branches"
+                    class="branch"
+            >{{ branch }}
+            </div>
         </div>
         <button @click="loadRepositories">Load repos with token</button>
     </div>
@@ -26,4 +31,7 @@
 </script>
 
 <style scoped>
+    .branch {
+        margin-left: 20px;
+    }
 </style>
