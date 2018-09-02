@@ -21,19 +21,33 @@ export default new Vuex.Store({
                     const item = {
                         name: repositories[key].full_name,
                         private: repositories[key].private,
-                        branches: []
+                        branches: {}
                     };
                     Vue.set(state.repositories, id, item);
                 }
             }
         },
         setBranchesForRepository(state, data) {
-            let branchesTmp = [];
             for (let key in data.branchData) {
-                branchesTmp.push(data.branchData[key].name);
+                const name = data.branchData[key].name;
+                const item = {
+                    name: name,
+                    commits: []
+                };
+                Vue.set(state.repositories[data.repositoryId].branches, name, item);
             }
-
-            state.repositories[data.repositoryId].branches = branchesTmp;
+        },
+        setCommitsForBranch(state, {commits, repositoryId, branch}) {
+            let commitsTmp = [];
+            for (let key in commits) {
+                const commit = commits[key];
+                const item = {
+                    message: commit.commit.message,
+                    date: commit.commit.committer.date
+                };
+                commitsTmp.push(item);
+            }
+            state.repositories[repositoryId].branches[branch].commits = commitsTmp;
         }
     },
     actions: {
@@ -81,7 +95,7 @@ export default new Vuex.Store({
                 dispatch('loadBranches', key);
             }
         },
-        loadBranches({state, commit}, repositoryId) {
+        loadBranches({dispatch, state, commit}, repositoryId) {
             if (typeof  state.token !== 'string') {
                 return;
             }
@@ -95,14 +109,64 @@ export default new Vuex.Store({
             const url = 'https://api.github.com/repos/' + state.repositories[repositoryId].name + '/branches';
 
             return axios.get(url, {params: {access_token: state.token}})
-                .then(response => commit('setBranchesForRepository', {
-                    branchData: response.data,
-                    repositoryId: repositoryId
+                .then(response => {
+                    commit('setBranchesForRepository', {
+                        branchData: response.data,
+                        repositoryId: repositoryId
+                    });
+                    dispatch('loadCommitsForBranches', repositoryId);
+                })
+                .catch((error) => console.log(error));
+        },
+        loadCommitsForBranches({dispatch, state}, repositoryId) {
+            if (typeof  state.token !== 'string') {
+                return;
+            }
+            if (state.token.length === 0) {
+                return;
+            }
+            if (!state.repositories.hasOwnProperty(repositoryId)) {
+                return;
+            }
+
+            for (let key in state.repositories[repositoryId].branches) {
+                if (!state.repositories[repositoryId].branches.hasOwnProperty(key)) {
+                    continue;
+                }
+
+                dispatch('loadCommits', {repositoryId: repositoryId, branch: key});
+            }
+        },
+        loadCommits({state, commit}, {repositoryId, branch}) {
+            if (typeof  state.token !== 'string') {
+                return;
+            }
+            if (state.token.length === 0) {
+                return;
+            }
+            if (!state.repositories.hasOwnProperty(repositoryId)) {
+                return;
+            }
+            if (!state.repositories[repositoryId].branches.hasOwnProperty(branch)) {
+                return;
+            }
+
+            const url = 'https://api.github.com/repos/' + state.repositories[repositoryId].name + '/commits';
+
+            return axios.get(url, {
+                params: {
+                    access_token: state.token,
+                    sha: branch,
+                    since: '2018-08-27T00:00:00.000Z'
+                }
+            })
+                .then(response => commit('setCommitsForBranch', {
+                    commits: response.data,
+                    repositoryId: repositoryId,
+                    branch: branch
                 }))
                 .catch((error) => console.log(error));
         },
-
-
     },
     plugins: [
         createPersistedState({

@@ -7,7 +7,12 @@
             <div
                     v-for="branch in repo.branches"
                     class="branch"
-            >{{ branch }}
+            >{{ branch.name }}
+                <div
+                        v-for="commit in branch.commits"
+                        class="commit"
+                >{{ commit.date }} {{ commit.message }}
+                </div>
             </div>
         </div>
         <button @click="loadRepositories">Load repos with token</button>
@@ -33,5 +38,9 @@
 <style scoped>
     .branch {
         margin-left: 20px;
+    }
+
+    .commit {
+        margin-left: 40px;
     }
 </style>
