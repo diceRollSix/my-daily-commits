@@ -48,7 +48,12 @@ export default new Vuex.Store({
         },
         setCommitsForBranch(state, {commits, repositoryId, branch}) {
             let commitsTmp = [];
+
+            // const masterCommits = state.repositories[repositoryId].branches.hasOwnProperty('master')
+
             for (let key in commits) {
+
+
                 const commit = commits[key];
                 //TODO если коммиты есть в ветке мастер (или дефолтной ветке) не выводить их в других
                 const item = {
@@ -159,12 +164,34 @@ export default new Vuex.Store({
                 return;
             }
 
+            const masterBranch = 'master';
+
+            let branches = [];
+            let isIssetMaster = false;
+
             for (let key in state.repositories[repositoryId].branches) {
                 if (!state.repositories[repositoryId].branches.hasOwnProperty(key)) {
                     continue;
                 }
 
-                dispatch('loadCommits', {repositoryId: repositoryId, branch: key});
+                if (key === masterBranch) {
+                    isIssetMaster = true;
+                    continue;
+                }
+
+                branches.push(key);
+            }
+
+            if (isIssetMaster) {
+                dispatch('loadCommits', {repositoryId: repositoryId, branch: masterBranch}).then(() => {
+                    for (let key in branches) {
+                        dispatch('loadCommits', {repositoryId: repositoryId, branch: branches[key]});
+                    }
+                });
+            } else {
+                for (let key in branches) {
+                    dispatch('loadCommits', {repositoryId: repositoryId, branch: branches[key]});
+                }
             }
         },
         loadCommits({state, commit}, {repositoryId, branch}) {
