@@ -2,6 +2,7 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 import axios from 'axios'
 import createPersistedState from "vuex-persistedstate";
+import {getDateFromDateType} from './helpers';
 
 Vue.use(Vuex);
 
@@ -10,10 +11,14 @@ export default new Vuex.Store({
         user: '',
         token: '',
         repositories: {},
+        dateType: '3'
     },
     mutations: {
         saveToken(state, token) {
             state.token = token;
+        },
+        saveDateType(state, dateType) {
+            state.dateType = dateType;
         },
         setUser(state, userData) {
             state.user = userData.login;
@@ -60,6 +65,9 @@ export default new Vuex.Store({
                 return;
             }
             return commit('saveToken', token);
+        },
+        saveDateType({commit}, dateType) {
+            return commit('saveDateType', dateType);
         },
         //TODO каждое действие сделать атомарной загрузкой
         //создать действие из цепочки действий
@@ -179,7 +187,7 @@ export default new Vuex.Store({
                     access_token: state.token,
                     sha: branch,
                     author: state.user,
-                    since: '2018-08-27T00:00:00.000Z'
+                    since: getDateFromDateType(state.dateType)
                 }
             })
                 .then(response => commit('setCommitsForBranch', {
@@ -192,7 +200,7 @@ export default new Vuex.Store({
     },
     plugins: [
         createPersistedState({
-            paths: ['token']
+            paths: ['token', 'dateType']
         })
     ]
 })
