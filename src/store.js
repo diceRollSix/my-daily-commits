@@ -21,10 +21,16 @@ export default new Vuex.Store({
             state.dateType = dateType;
         },
         setUser(state, userData) {
-            state.user = userData.login;
+            if (userData.hasOwnProperty('login')) {
+                state.user = userData.login;
+            }
         },
         setRepositories(state, repositories) {
             for (let key in repositories) {
+                if (!repositories.hasOwnProperty(key)) {
+                    continue;
+                }
+
                 const id = repositories[key].id;
                 if (!state.repositories.hasOwnProperty(id)) {
                     const item = {
@@ -49,16 +55,28 @@ export default new Vuex.Store({
         setCommitsForBranch(state, {commits, repositoryId, branch}) {
             let commitsTmp = [];
 
-            // const masterCommits = state.repositories[repositoryId].branches.hasOwnProperty('master')
+            const masterCommits = state.repositories[repositoryId].branches.hasOwnProperty('master')
+                ? state.repositories[repositoryId].branches.master.commits
+                : [];
+
+            let masterCommitsObject = {};
+            for (let key in masterCommits) {
+                masterCommitsObject[masterCommits[key].sha] = true;
+            }
 
             for (let key in commits) {
-
-
                 const commit = commits[key];
-                //TODO если коммиты есть в ветке мастер (или дефолтной ветке) не выводить их в других
+                const sha = commit.sha;
+
+                if (masterCommitsObject.hasOwnProperty(sha)) {
+                    //Уже есть в мастере - пропускаем.
+                    continue;
+                }
+
                 const item = {
                     message: commit.commit.message,
-                    date: commit.commit.committer.date
+                    date: commit.commit.committer.date,
+                    sha: sha
                 };
                 commitsTmp.push(item);
             }
