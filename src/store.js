@@ -7,12 +7,16 @@ Vue.use(Vuex);
 
 export default new Vuex.Store({
     state: {
+        user: '',
         token: '',
         repositories: {},
     },
     mutations: {
         saveToken(state, token) {
             state.token = token;
+        },
+        setUser(state, userData) {
+            state.user = userData.login;
         },
         setRepositories(state, repositories) {
             for (let key in repositories) {
@@ -57,6 +61,24 @@ export default new Vuex.Store({
             }
             return commit('saveToken', token);
         },
+        //TODO каждое действие сделать атомарной загрузкой
+        //создать действие из цепочки действий
+        loadUser({state, commit, dispatch}) {
+            if (typeof  state.token !== 'string') {
+                return;
+            }
+            if (state.token.length === 0) {
+                return;
+            }
+            const url = 'https://api.github.com/user';
+
+            return axios.get(url, {params: {access_token: state.token}})
+                .then(response => {
+                    commit('setUser', response.data);
+                    dispatch('loadRepositories');
+                })
+                .catch((error) => console.log(error));
+        },
         loadRepositories({dispatch, state, commit}) {
             if (typeof  state.token !== 'string') {
                 return;
@@ -70,7 +92,6 @@ export default new Vuex.Store({
             return axios.get(url, {
                 params: {
                     access_token: state.token,
-                    type: 'all'
                 }
             })
                 .then(response => {
@@ -157,6 +178,7 @@ export default new Vuex.Store({
                 params: {
                     access_token: state.token,
                     sha: branch,
+                    author: state.user,
                     since: '2018-08-27T00:00:00.000Z'
                 }
             })

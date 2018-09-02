@@ -15,7 +15,7 @@
                 </div>
             </div>
         </div>
-        <button @click="loadRepositories">Load repos with token</button>
+        <button @click="loadUser">Load repos with token</button>
     </div>
 </template>
 
@@ -30,7 +30,7 @@
             }
         },
         methods: {
-            ...mapActions(['loadRepositories'])
+            ...mapActions(['loadUser'])
         }
     }
 </script>
