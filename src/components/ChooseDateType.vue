@@ -16,7 +16,6 @@
 </template>
 
 <script>
-
     export default {
         name: 'choose-date-type',
         computed: {

@@ -50,6 +50,7 @@ export default new Vuex.Store({
             let commitsTmp = [];
             for (let key in commits) {
                 const commit = commits[key];
+                //TODO если коммиты есть в ветке мастер (или дефолтной ветке) не выводить их в других
                 const item = {
                     message: commit.commit.message,
                     date: commit.commit.committer.date
