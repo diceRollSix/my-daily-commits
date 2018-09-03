@@ -15,6 +15,7 @@ export default new Vuex.Store({
 
         showMergeCommits: false,
         showEmptySources: false,
+        showEmptyRepositories: false,
     },
     mutations: {
         saveToken(state, token) {
@@ -28,6 +29,9 @@ export default new Vuex.Store({
         },
         saveShowEmptySources(state, showEmptySources) {
             state.showEmptySources = showEmptySources;
+        },
+        saveShowEmptyRepositories(state, showEmptyRepositories) {
+            state.showEmptyRepositories = showEmptyRepositories;
         },
         setUser(state, userData) {
             if (userData.hasOwnProperty('login')) {
@@ -147,6 +151,9 @@ export default new Vuex.Store({
         },
         saveShowEmptySources({commit}, showEmptySources) {
             return commit('saveShowEmptySources', showEmptySources);
+        },
+        saveShowEmptyRepositories({commit}, showEmptyRepositories) {
+            return commit('saveShowEmptyRepositories', showEmptyRepositories);
         },
         //TODO каждое действие сделать атомарной загрузкой
         //создать действие из цепочки действий

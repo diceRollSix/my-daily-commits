@@ -2,6 +2,7 @@
     <div>
         <div
                 v-for="repo in repositories"
+                v-show="showRepository(repo)"
                 :key="repo.id"
         >{{ repo.name }}
             <div
@@ -56,6 +57,9 @@
             showEmptySources: function () {
                 return this.$store.state.showEmptySources;
             },
+            showEmptyRepositories: function () {
+                return this.$store.state.showEmptyRepositories;
+            },
         },
         methods: {
             ...mapActions(['loadUser']),
@@ -74,20 +78,34 @@
                     return true;
                 }
 
-                let show = false;
-
                 for (let key in pullRequests) {
                     if (!pullRequests.hasOwnProperty(key)) {
                         continue;
                     }
 
                     if (pullRequests[key].commits.length !== 0) {
-                        show = true;
-                        break;
+                        return true;
                     }
                 }
 
-                return show;
+                return false;
+            },
+            showRepository: function (repository) {
+                if (this.showEmptyRepositories) {
+                    return true;
+                }
+
+                for (let key in repository.branches) {
+                    if (!repository.branches.hasOwnProperty(key)) {
+                        continue;
+                    }
+
+                    if (repository.branches[key].commits.length !== 0) {
+                        return true;
+                    }
+                }
+
+                return this.showPullRequestsTitle(repository.pullRequests);
             },
         }
     }
