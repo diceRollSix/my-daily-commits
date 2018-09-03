@@ -2,10 +2,15 @@
  * Date since by date type.
  *
  * @param dateType
+ * @param returnDate
  *
  * @returns {string}
  */
-function getSinceDateFromDateType(dateType) {
+function getSinceDateFromDateType(dateType, returnDate) {
+    if (typeof returnDate === 'undefined') {
+        returnDate = false;
+    }
+
     let date = new Date();
     date.setHours(0, 0, 0, 0);
 
@@ -30,6 +35,10 @@ function getSinceDateFromDateType(dateType) {
             break;
     }
 
+    if (returnDate) {
+        return date;
+    }
+
     return date.toISOString();
 }
 
@@ -37,10 +46,15 @@ function getSinceDateFromDateType(dateType) {
  * Date Until by date type.
  *
  * @param dateType
+ * @param returnDate
  *
  * @returns {string}
  */
-function getUntilDateFromDateType(dateType) {
+function getUntilDateFromDateType(dateType, returnDate) {
+    if (typeof returnDate === 'undefined') {
+        returnDate = false;
+    }
+
     let date = new Date();
 
     //TODO date type to constance
@@ -63,6 +77,10 @@ function getUntilDateFromDateType(dateType) {
         case '4':
             //end of today
             break;
+    }
+
+    if (returnDate) {
+        return date;
     }
 
     return date.toISOString();
