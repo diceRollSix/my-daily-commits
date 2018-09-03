@@ -1,6 +1,6 @@
 <template>
     <div id="app">
-        <since-date/>
+        <since-until-date/>
         <repositories/>
         <token/>
         <choose-date-type/>
@@ -8,15 +8,15 @@
 </template>
 
 <script>
-    import Token from './components/Token.vue'
+    import Token from "./components/Token.vue"
     import Repositories from "./components/Ropositories";
     import ChooseDateType from "./components/ChooseDateType";
-    import SinceDate from "./components/SinceDate";
+    import SinceUntilDate from "./components/SinceUntilDate";
 
     export default {
         name: 'app',
         components: {
-            SinceDate,
+            SinceUntilDate,
             ChooseDateType,
             Repositories,
             Token

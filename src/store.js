@@ -2,7 +2,7 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 import axios from 'axios'
 import createPersistedState from "vuex-persistedstate";
-import {getDateFromDateType} from './helpers';
+import {getSinceDateFromDateType, getUntilDateFromDateType} from './helpers';
 
 Vue.use(Vuex);
 
@@ -233,7 +233,8 @@ export default new Vuex.Store({
                     access_token: state.token,
                     sha: branch,
                     author: state.user,
-                    since: getDateFromDateType(state.dateType)
+                    since: getSinceDateFromDateType(state.dateType),
+                    until: getUntilDateFromDateType(state.dateType)
                 }
             })
                 .then(response => commit('setCommitsForBranch', {
