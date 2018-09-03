@@ -10,6 +10,7 @@
             >{{ branch.name }}
                 <div
                         v-for="commit in branch.commits"
+                        v-show="showCommit(commit.message)"
                         class="commit"
                 >{{ commit.date }} {{ commit.message }}
                 </div>
@@ -23,6 +24,7 @@
             >{{ pullRequest.title }}
                 <div
                         v-for="commit in pullRequest.commits"
+                        v-show="showCommit(commit.message)"
                         class="commit"
                 >{{ commit.date }} {{ commit.message }}
                 </div>
@@ -40,10 +42,16 @@
         computed: {
             repositories: function () {
                 return this.$store.state.repositories;
-            }
+            },
+            showMergeCommits: function () {
+                return this.$store.state.showMergeCommits;
+            },
         },
         methods: {
-            ...mapActions(['loadUser'])
+            ...mapActions(['loadUser']),
+            showCommit: function (message) {
+                return this.showMergeCommits || (message.indexOf('Merge branch') !== 0);
+            }
         }
     }
 </script>

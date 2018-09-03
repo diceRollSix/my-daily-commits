@@ -11,7 +11,9 @@ export default new Vuex.Store({
         user: '',
         token: '',
         repositories: {},
-        dateType: '3'
+        dateType: '3',
+
+        showMergeCommits: false,
     },
     mutations: {
         saveToken(state, token) {
@@ -19,6 +21,9 @@ export default new Vuex.Store({
         },
         saveDateType(state, dateType) {
             state.dateType = dateType;
+        },
+        saveShowMergeCommits(state, showMergeCommits) {
+            state.showMergeCommits = showMergeCommits;
         },
         setUser(state, userData) {
             if (userData.hasOwnProperty('login')) {
@@ -132,6 +137,9 @@ export default new Vuex.Store({
         },
         saveDateType({commit}, dateType) {
             return commit('saveDateType', dateType);
+        },
+        saveShowMergeCommits({commit}, showMergeCommits) {
+            return commit('saveShowMergeCommits', showMergeCommits);
         },
         //TODO каждое действие сделать атомарной загрузкой
         //создать действие из цепочки действий
@@ -378,7 +386,7 @@ export default new Vuex.Store({
     },
     plugins: [
         createPersistedState({
-            paths: ['token', 'dateType']
+            paths: ['token', 'dateType', 'showMergeCommits']
         })
     ]
 })
