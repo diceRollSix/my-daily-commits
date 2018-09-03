@@ -6,20 +6,27 @@
         >{{ repo.name }}
             <div
                     v-for="branch in repo.branches"
+                    v-show="showSource(branch)"
                     class="branch"
             >{{ branch.name }}
                 <div
                         v-for="commit in branch.commits"
                         v-show="showCommit(commit.message)"
+
                         class="commit"
                 >{{ commit.date }} {{ commit.message }}
                 </div>
             </div>
 
 
-            <div class="pull_request_title">PullRequests</div>
+            <div
+                    v-show="showPullRequestsTitle(repo.pullRequests)"
+                    class="pull_request_title"
+            >PullRequests
+            </div>
             <div
                     v-for="pullRequest in repo.pullRequests"
+                    v-show="showSource(pullRequest)"
                     class="pull_request"
             >{{ pullRequest.title }}
                 <div
@@ -46,12 +53,42 @@
             showMergeCommits: function () {
                 return this.$store.state.showMergeCommits;
             },
+            showEmptySources: function () {
+                return this.$store.state.showEmptySources;
+            },
         },
         methods: {
             ...mapActions(['loadUser']),
             showCommit: function (message) {
                 return this.showMergeCommits || (message.indexOf('Merge branch') !== 0);
-            }
+            },
+            showSource: function (source) {
+                if (!source.hasOwnProperty('commits')) {
+                    return true;
+                }
+
+                return this.showEmptySources || (source.commits.length !== 0);
+            },
+            showPullRequestsTitle: function (pullRequests) {
+                if (this.showEmptySources) {
+                    return true;
+                }
+
+                let show = false;
+
+                for (let key in pullRequests) {
+                    if (!pullRequests.hasOwnProperty(key)) {
+                        continue;
+                    }
+
+                    if (pullRequests[key].commits.length !== 0) {
+                        show = true;
+                        break;
+                    }
+                }
+
+                return show;
+            },
         }
     }
 </script>
