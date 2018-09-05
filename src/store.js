@@ -33,78 +33,71 @@ export default new Vuex.Store({
         saveShowEmptyRepositories(state, showEmptyRepositories) {
             state.showEmptyRepositories = showEmptyRepositories;
         },
-        setUser(state, userData) {
-            if (userData.hasOwnProperty('login')) {
-                state.user = userData.login;
-            }
+
+        setUser(state, login) {
+            state.user = login;
         },
-        setRepositories(state, repositories) {
-            for (let key in repositories) {
-                if (!repositories.hasOwnProperty(key)) {
+        setRepository(state, repository) {
+            const nameWithOwner = repository.nameWithOwner;
+
+            //region repository.refs.edges
+            let branches = {};
+            for (let key in repository.refs.edges) {
+                if (!repository.refs.edges.hasOwnProperty(key)) {
                     continue;
                 }
 
-                const id = repositories[key].id;
-                if (!state.repositories.hasOwnProperty(id)) {
-                    const item = {
-                        name: repositories[key].full_name,
-                        private: repositories[key].private,
-                        branches: {},
-                        pullRequests: {}
-                    };
-                    Vue.set(state.repositories, id, item);
-                }
-            }
-        },
-        setBranchesForRepository(state, {branchData, repositoryId}) {
-            for (let key in branchData) {
-                if (!branchData.hasOwnProperty(key)) {
-                    continue;
-                }
-
-                const name = branchData[key].name;
+                const branch = repository.refs.edges[key].node;
                 const item = {
-                    name: name,
+                    name: branch.name,
                     commits: []
                 };
-                Vue.set(state.repositories[repositoryId].branches, name, item);
+                Vue.set(branches, branch.name, item);
             }
-        },
-        setPullRequestsForRepository(state, {pullRequests, repositoryId}) {
+            //endregion
+
+            //region repository.pullRequests.edges
             const since = getSinceDateFromDateType(state.dateType, true).getTime();
-            const until = getUntilDateFromDateType(state.dateType, true).getTime();
 
-            for (let key in pullRequests) {
-                if (!pullRequests.hasOwnProperty(key)) {
+            let pullRequests = {};
+            for (let key in repository.pullRequests.edges) {
+                if (!repository.pullRequests.edges.hasOwnProperty(key)) {
+                    continue;
+                }
+                const pullRequest = repository.pullRequests.edges[key].node;
+
+                const mergedAt = pullRequest.mergedAt;
+                const mergedAtTime = (new Date(mergedAt)).getTime();
+
+                //Смержен раньше чем начальная дата просомтра.
+                if (mergedAtTime < since) {
                     continue;
                 }
 
-                const merged_at = pullRequests[key].merged_at;
-                const merged_at_time = (new Date(merged_at)).getTime();
-
-                if (merged_at_time > until) {
-                    continue;
-                }
-
-                if (merged_at_time < since) {
-                    break;
-                }
-
-                const id = pullRequests[key].id;
                 const item = {
-                    title: pullRequests[key].title,
-                    merged_at: merged_at,
-                    head: pullRequests[key].head.sha,
+                    number: pullRequest.number,
+                    title: pullRequest.title,
+                    mergedAt: mergedAt,
+                    head: pullRequest.headRefOid,
                     commits: []
                 };
-                Vue.set(state.repositories[repositoryId].pullRequests, id, item);
+                Vue.set(pullRequests, pullRequest.number, item);
             }
+            //endregion
+
+            const item = {
+                name: nameWithOwner,
+                private: repository.isisPrivate,
+                branches: branches,
+                pullRequests: pullRequests
+            };
+            Vue.set(state.repositories, nameWithOwner, item);
         },
-        setCommits(state, {commits, repositoryId, branch, pullRequestId}) {
+        setCommits(state, {commits, repository, branch, pullRequest}) {
             let commitsTmp = [];
 
-            const masterCommits = state.repositories[repositoryId].branches.hasOwnProperty('master')
-                ? state.repositories[repositoryId].branches.master.commits
+            const masterCommits = state.repositories[repository].branches.hasOwnProperty('master')
+                ? state.repositories[repository].branches.master.commits
                 : [];
 
             let masterCommitsObject = {};
@@ -113,26 +106,28 @@ export default new Vuex.Store({
             }
 
             for (let key in commits) {
+                if (!commits.hasOwnProperty(key)) {
+                    continue;
+                }
                 const commit = commits[key];
-                const sha = commit.sha;
 
-                if (masterCommitsObject.hasOwnProperty(sha)) {
-                    //Уже есть в мастере - пропускаем.
+                if (masterCommitsObject.hasOwnProperty(commit.sha)) {
+                    //Already in master - skip commit
                     continue;
                 }
 
                 const item = {
                     message: commit.commit.message,
                     date: commit.commit.committer.date,
-                    sha: sha
+                    sha: commit.sha
                 };
                 commitsTmp.push(item);
             }
 
             if (typeof branch !== 'undefined') {
-                state.repositories[repositoryId].branches[branch].commits = commitsTmp;
-            } else if (typeof pullRequestId !== 'undefined') {
-                state.repositories[repositoryId].pullRequests[pullRequestId].commits = commitsTmp;
+                state.repositories[repository].branches[branch].commits = commitsTmp;
+            } else if (typeof pullRequest !== 'undefined') {
+                state.repositories[repository].pullRequests[pullRequest].commits = commitsTmp;
             }
         }
     },
@@ -157,102 +152,70 @@ export default new Vuex.Store({
         },
         //TODO каждое действие сделать атомарной загрузкой
         //создать действие из цепочки действий
-        loadUser({state, commit, dispatch}) {
+
+        loadUserCommitSourceData({state, commit, dispatch}) {
             if (typeof  state.token !== 'string') {
                 return;
             }
             if (state.token.length === 0) {
                 return;
             }
-            const url = 'https://api.github.com/user';
 
-            return axios.get(url, {params: {access_token: state.token}})
+            const query = '{ viewer { login name repositories(first: 20) { totalCount edges { node { nameWithOwner isPrivate refs(first: 20, refPrefix: "refs/heads/") { totalCount edges { node { name } } } pullRequests(states: MERGED, first: 30, orderBy:{field:UPDATED_AT, direction:DESC}) { edges { node { databaseId number title headRefOid mergedAt } } } } } } } }';
+
+            const data = {'query': query};
+            const options = {
+                method: 'post',
+                headers: {'Authorization': 'bearer ' + state.token},
+                data: data,
+                url: 'https://api.github.com/graphql'
+            };
+
+            axios(options)
                 .then(response => {
-                    commit('setUser', response.data);
-                    dispatch('loadRepositories');
+                    //TODO check error
+                    const viewer = response.data.data.viewer;
+                    commit('setUser', viewer.login);
+
+                    for (let repositoryKey in viewer.repositories.edges) {
+                        if (!viewer.repositories.edges.hasOwnProperty(repositoryKey)) {
+                            continue;
+                        }
+
+                        let repository = viewer.repositories.edges[repositoryKey].node;
+                        commit('setRepository', repository);
+                    }
+
+                    for (let fullName in state.repositories) {
+                        if (!state.repositories.hasOwnProperty(fullName)) {
+                            continue;
+                        }
+                        dispatch('loadCommitsForRepository', fullName);
+                    }
                 })
                 .catch((error) => console.log(error));
         },
-        loadRepositories({dispatch, state, commit}) {
+        loadCommitsForRepository({dispatch, state}, repository) {
             if (typeof  state.token !== 'string') {
                 return;
             }
             if (state.token.length === 0) {
                 return;
             }
-
-            const url = 'https://api.github.com/user/repos';
-
-            return axios.get(url, {
-                params: {
-                    access_token: state.token,
-                }
-            })
-                .then(response => {
-                    commit('setRepositories', response.data);
-                    dispatch('loadBranchesForAllRepositories');
-                })
-                .catch((error) => console.log(error));
-        },
-        loadBranchesForAllRepositories({dispatch, state}) {
-            if (typeof  state.token !== 'string') {
-                return;
-            }
-            if (state.token.length === 0) {
+            if (!state.repositories.hasOwnProperty(repository)) {
                 return;
             }
 
-            for (let key in state.repositories) {
-                if (!state.repositories.hasOwnProperty(key)) {
-                    continue;
-                }
-
-                dispatch('loadBranches', key).then(function () {
-                    dispatch('loadPullRequests', key);
-                })
-            }
-        },
-        loadBranches({dispatch, state, commit}, repositoryId) {
-            if (typeof  state.token !== 'string') {
-                return;
-            }
-            if (state.token.length === 0) {
-                return;
-            }
-            if (!state.repositories.hasOwnProperty(repositoryId)) {
-                return;
-            }
-
-            const url = 'https://api.github.com/repos/' + state.repositories[repositoryId].name + '/branches';
-
-            return axios.get(url, {params: {access_token: state.token}})
-                .then(response => {
-                    commit('setBranchesForRepository', {
-                        branchData: response.data,
-                        repositoryId: repositoryId
-                    });
-                    dispatch('loadCommitsForBranches', repositoryId);
-                })
-                .catch((error) => console.log(error));
-        },
-        loadCommitsForBranches({dispatch, state}, repositoryId) {
-            if (typeof  state.token !== 'string') {
-                return;
-            }
-            if (state.token.length === 0) {
-                return;
-            }
-            if (!state.repositories.hasOwnProperty(repositoryId)) {
-                return;
-            }
-
+            //Load commits from master at first
+            //For exclusion master commits from other branches / pullRequests
+            //(avoid duplication of commits)
             const masterBranch = 'master';
 
             let branches = [];
             let isIssetMaster = false;
 
-            for (let key in state.repositories[repositoryId].branches) {
-                if (!state.repositories[repositoryId].branches.hasOwnProperty(key)) {
+            for (let key in state.repositories[repository].branches) {
+                if (!state.repositories[repository].branches.hasOwnProperty(key)) {
                     continue;
                 }
 
@@ -264,38 +227,55 @@ export default new Vuex.Store({
                 branches.push(key);
             }
 
-            if (isIssetMaster) {
-                dispatch('loadCommits', {repositoryId: repositoryId, branch: masterBranch}).then(() => {
-                    for (let key in branches) {
-                        dispatch('loadCommits', {repositoryId: repositoryId, branch: branches[key]});
-                    }
-                });
-            } else {
+            let loadCommits = function () {
                 for (let key in branches) {
-                    dispatch('loadCommits', {repositoryId: repositoryId, branch: branches[key]});
+                    dispatch('loadCommits', {repository: repository, branch: branches[key]});
                 }
+
+                for (let key in state.repositories[repository].pullRequests) {
+                    if (!state.repositories[repository].pullRequests.hasOwnProperty(key)) {
+                        continue;
+                    }
+
+                    dispatch('loadCommits', {repository: repository, pullRequest: key});
+                }
+            };
+
+            if (isIssetMaster) {
+                dispatch('loadCommits', {repository: repository, branch: masterBranch}).then(loadCommits);
+            } else {
+                loadCommits();
             }
         },
-        loadCommits({state, commit}, {repositoryId, branch}) {
-            if (typeof  state.token !== 'string') {
+        loadCommits({state, commit}, {repository, branch, pullRequest}) {
+            if (typeof state.token !== 'string') {
                 return;
             }
             if (state.token.length === 0) {
                 return;
             }
-            if (!state.repositories.hasOwnProperty(repositoryId)) {
-                return;
-            }
-            if (!state.repositories[repositoryId].branches.hasOwnProperty(branch)) {
+            if (!state.repositories.hasOwnProperty(repository)) {
                 return;
             }
 
-            const url = 'https://api.github.com/repos/' + state.repositories[repositoryId].name + '/commits';
+            if (typeof branch !== 'undefined' && !state.repositories[repository].branches.hasOwnProperty(branch)) {
+                return;
+            }
+
+            if (typeof pullRequest !== 'undefined' && !state.repositories[repository].pullRequests.hasOwnProperty(pullRequest)) {
+                return;
+            }
+
+            const url = 'https://api.github.com/repos/' + state.repositories[repository].name + '/commits';
+
+            let sha = (typeof branch !== 'undefined')
+                ? branch
+                : state.repositories[repository].pullRequests[pullRequest].head;
 
             return axios.get(url, {
                 params: {
                     access_token: state.token,
-                    sha: branch,
+                    sha: sha,
                     author: state.user,
                     since: getSinceDateFromDateType(state.dateType),
                     until: getUntilDateFromDateType(state.dateType),
@@ -304,103 +284,16 @@ export default new Vuex.Store({
             })
                 .then(response => commit('setCommits', {
                     commits: response.data,
-                    repositoryId: repositoryId,
-                    branch: branch
-                }))
-                .catch((error) => console.log(error));
-        },
-
-        loadPullRequests({dispatch, state, commit}, repositoryId) {
-            if (typeof  state.token !== 'string') {
-                return;
-            }
-            if (state.token.length === 0) {
-                return;
-            }
-            if (!state.repositories.hasOwnProperty(repositoryId)) {
-                return;
-            }
-
-            const url = 'https://api.github.com/repos/' + state.repositories[repositoryId].name + '/pulls';
-
-            //Take first 100 pull requests
-            //TODO add load next page (page:2..) if no requests in date range
-            return axios.get(url, {
-                params: {
-                    access_token: state.token,
-                    direction: 'desc',
-                    state: 'closed',
-                    per_page: 100
-                }
-            })
-                .then(response => {
-                    commit('setPullRequestsForRepository', {
-                        pullRequests: response.data,
-                        repositoryId: repositoryId
-                    });
-                    dispatch('loadCommitsForRepositoryPullRequests', repositoryId);
-                })
-                .catch((error) => console.log(error));
-        },
-        loadCommitsForRepositoryPullRequests({dispatch, state}, repositoryId) {
-            if (typeof  state.token !== 'string') {
-                return;
-            }
-            if (state.token.length === 0) {
-                return;
-            }
-            if (!state.repositories.hasOwnProperty(repositoryId)) {
-                return;
-            }
-
-            for (let key in state.repositories[repositoryId].pullRequests) {
-                if (!state.repositories[repositoryId].pullRequests.hasOwnProperty(key)) {
-                    continue;
-                }
-
-                dispatch('loadCommitsForPullRequest', {repositoryId: repositoryId, pullRequestId: key});
-            }
-        },
-
-        loadCommitsForPullRequest({state, commit}, {repositoryId, pullRequestId}) {
-            if (typeof  state.token !== 'string') {
-                return;
-            }
-            if (state.token.length === 0) {
-                return;
-            }
-            if (!state.repositories.hasOwnProperty(repositoryId)) {
-                return;
-            }
-            if (!state.repositories[repositoryId].pullRequests.hasOwnProperty(pullRequestId)) {
-                return;
-            }
-
-            const pullRequest = state.repositories[repositoryId].pullRequests[pullRequestId];
-
-            const url = 'https://api.github.com/repos/' + state.repositories[repositoryId].name + '/commits';
-
-            return axios.get(url, {
-                params: {
-                    access_token: state.token,
-                    sha: pullRequest.head,
-                    author: state.user,
-                    since: getSinceDateFromDateType(state.dateType),
-                    until: getUntilDateFromDateType(state.dateType),
-                    per_page: 100
-                }
-            })
-                .then(response => commit('setCommits', {
-                    commits: response.data,
-                    repositoryId: repositoryId,
-                    pullRequestId: pullRequestId
+                    repository: repository,
+                    branch: branch,
+                    pullRequest: pullRequest
                 }))
                 .catch((error) => console.log(error));
         },
     },
     plugins: [
         createPersistedState({
-            paths: ['token', 'dateType', 'showMergeCommits', 'showEmptySources']
+            paths: ['token', 'dateType', 'showMergeCommits', 'showEmptySources', 'showEmptyRepositories']
         })
     ]
 })

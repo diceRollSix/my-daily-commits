@@ -38,7 +38,7 @@
                 </div>
             </div>
         </div>
-        <button @click="loadUser">Load repos with token</button>
+        <button @click="loadUserCommitSourceData">Load repos with token</button>
     </div>
 </template>
 
@@ -62,7 +62,7 @@
             },
         },
         methods: {
-            ...mapActions(['loadUser']),
+            ...mapActions(['loadUserCommitSourceData']),
             showCommit: function (message) {
                 return this.showMergeCommits || (message.indexOf('Merge branch') !== 0);
             },
