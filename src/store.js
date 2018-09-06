@@ -42,52 +42,41 @@ export default new Vuex.Store({
 
             //region repository.refs.edges
             let branches = {};
-            for (let key in repository.refs.edges) {
-                if (!repository.refs.edges.hasOwnProperty(key)) {
-                    continue;
-                }
-
-                const branch = repository.refs.edges[key].node;
+            repository.refs.edges.forEach(branch => {
                 const item = {
-                    name: branch.name,
+                    name: branch.node.name,
                     commits: []
                 };
-                Vue.set(branches, branch.name, item);
-            }
+                Vue.set(branches, branch.node.name, item);
+            });
             //endregion
 
             //region repository.pullRequests.edges
             const since = getSinceDateFromDateType(state.dateType, true).getTime();
 
             let pullRequests = {};
-            for (let key in repository.pullRequests.edges) {
-                if (!repository.pullRequests.edges.hasOwnProperty(key)) {
-                    continue;
-                }
-                const pullRequest = repository.pullRequests.edges[key].node;
-
-                const mergedAt = pullRequest.mergedAt;
+            repository.pullRequests.edges.forEach(pullRequest => {
+                const mergedAt = pullRequest.node.mergedAt;
                 const mergedAtTime = (new Date(mergedAt)).getTime();
 
-                //Смержен раньше чем начальная дата просомтра.
+                //Merged earlier then since date.
                 if (mergedAtTime < since) {
-                    continue;
+                    return;
                 }
-
                 const item = {
-                    number: pullRequest.number,
-                    title: pullRequest.title,
+                    number: pullRequest.node.number,
+                    title: pullRequest.node.title,
                     mergedAt: mergedAt,
-                    head: pullRequest.headRefOid,
+                    head: pullRequest.node.headRefOid,
                     commits: []
                 };
-                Vue.set(pullRequests, pullRequest.number, item);
-            }
+                Vue.set(pullRequests, pullRequest.node.number, item);
+            });
             //endregion
 
             const item = {
                 name: nameWithOwner,
-                private: repository.isisPrivate,
+                private: repository.isPrivate,
                 branches: branches,
                 pullRequests: pullRequests
             };
@@ -101,19 +90,14 @@ export default new Vuex.Store({
                 : [];
 
             let masterCommitsObject = {};
-            for (let key in masterCommits) {
-                masterCommitsObject[masterCommits[key].sha] = true;
-            }
+            masterCommits.forEach(commit => {
+                masterCommitsObject[commit.sha] = true;
+            });
 
-            for (let key in commits) {
-                if (!commits.hasOwnProperty(key)) {
-                    continue;
-                }
-                const commit = commits[key];
-
+            commits.forEach(commit => {
                 if (masterCommitsObject.hasOwnProperty(commit.sha)) {
                     //Already in master - skip commit
-                    continue;
+                    return;
                 }
 
                 const item = {
@@ -122,7 +106,7 @@ export default new Vuex.Store({
                     sha: commit.sha
                 };
                 commitsTmp.push(item);
-            }
+            });
 
             if (typeof branch !== 'undefined') {
                 state.repositories[repository].branches[branch].commits = commitsTmp;
@@ -177,14 +161,9 @@ export default new Vuex.Store({
                     const viewer = response.data.data.viewer;
                     commit('setUser', viewer.login);
 
-                    for (let repositoryKey in viewer.repositories.edges) {
-                        if (!viewer.repositories.edges.hasOwnProperty(repositoryKey)) {
-                            continue;
-                        }
-
-                        let repository = viewer.repositories.edges[repositoryKey].node;
-                        commit('setRepository', repository);
-                    }
+                    viewer.repositories.edges.forEach(repository => {
+                        commit('setRepository', repository.node);
+                    });
 
                     for (let fullName in state.repositories) {
                         if (!state.repositories.hasOwnProperty(fullName)) {
