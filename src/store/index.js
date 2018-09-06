@@ -1,39 +1,21 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import axios from 'axios'
-import createPersistedState from "vuex-persistedstate";
-import {getSinceDateFromDateType, getUntilDateFromDateType} from './helpers';
+import createPersistedState from 'vuex-persistedstate';
+import {getSinceDateFromDateType, getUntilDateFromDateType} from './../helpers';
+import settings from './settings'
 
 Vue.use(Vuex);
 
 export default new Vuex.Store({
+    modules: {
+        settings
+    },
     state: {
         user: '',
-        token: '',
         repositories: {},
-        dateType: '3',
-
-        showMergeCommits: false,
-        showEmptySources: false,
-        showEmptyRepositories: false,
     },
     mutations: {
-        saveToken(state, token) {
-            state.token = token;
-        },
-        saveDateType(state, dateType) {
-            state.dateType = dateType;
-        },
-        saveShowMergeCommits(state, showMergeCommits) {
-            state.showMergeCommits = showMergeCommits;
-        },
-        saveShowEmptySources(state, showEmptySources) {
-            state.showEmptySources = showEmptySources;
-        },
-        saveShowEmptyRepositories(state, showEmptyRepositories) {
-            state.showEmptyRepositories = showEmptyRepositories;
-        },
-
         setUser(state, login) {
             state.user = login;
         },
@@ -116,27 +98,8 @@ export default new Vuex.Store({
         }
     },
     actions: {
-        saveToken({commit}, token) {
-            if (token.length === 0) {
-                return;
-            }
-            return commit('saveToken', token);
-        },
-        saveDateType({commit}, dateType) {
-            return commit('saveDateType', dateType);
-        },
-        saveShowMergeCommits({commit}, showMergeCommits) {
-            return commit('saveShowMergeCommits', showMergeCommits);
-        },
-        saveShowEmptySources({commit}, showEmptySources) {
-            return commit('saveShowEmptySources', showEmptySources);
-        },
-        saveShowEmptyRepositories({commit}, showEmptyRepositories) {
-            return commit('saveShowEmptyRepositories', showEmptyRepositories);
-        },
         //TODO каждое действие сделать атомарной загрузкой
         //создать действие из цепочки действий
-
         loadUserCommitSourceData({state, commit, dispatch}) {
             if (typeof state.token !== 'string') {
                 return;

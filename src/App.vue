@@ -14,9 +14,11 @@
     import ChooseDateType from "./components/ChooseDateType";
     import SinceUntilDate from "./components/SinceUntilDate";
     import DisplaySettings from "./components/DisplaySettings";
+    import store from './store/';
 
     export default {
         name: 'app',
+        store,
         components: {
             DisplaySettings,
             SinceUntilDate,
