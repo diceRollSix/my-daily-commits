@@ -138,7 +138,7 @@ export default new Vuex.Store({
         //создать действие из цепочки действий
 
         loadUserCommitSourceData({state, commit, dispatch}) {
-            if (typeof  state.token !== 'string') {
+            if (typeof state.token !== 'string') {
                 return;
             }
             if (state.token.length === 0) {
@@ -165,12 +165,9 @@ export default new Vuex.Store({
                         commit('setRepository', repository.node);
                     });
 
-                    for (let fullName in state.repositories) {
-                        if (!state.repositories.hasOwnProperty(fullName)) {
-                            continue;
-                        }
+                    Object.keys(state.repositories).forEach(fullName => {
                         dispatch('loadCommitsForRepository', fullName);
-                    }
+                    });
                 })
                 .catch((error) => console.log(error));
         },
@@ -190,34 +187,20 @@ export default new Vuex.Store({
             //(avoid duplication of commits)
             const masterBranch = 'master';
 
-            let branches = [];
-            let isIssetMaster = false;
-
-            for (let key in state.repositories[repository].branches) {
-                if (!state.repositories[repository].branches.hasOwnProperty(key)) {
-                    continue;
-                }
-
-                if (key === masterBranch) {
-                    isIssetMaster = true;
-                    continue;
-                }
-
-                branches.push(key);
+            let branches = Object.keys(state.repositories[repository].branches);
+            let isIssetMaster = state.repositories[repository].branches.hasOwnProperty(masterBranch);
+            if (isIssetMaster) {
+                branches = branches.filter(branch => branch !== masterBranch);
             }
 
             let loadCommits = function () {
-                for (let key in branches) {
-                    dispatch('loadCommits', {repository: repository, branch: branches[key]});
-                }
+                branches.forEach(branch => {
+                    dispatch('loadCommits', {repository: repository, branch: branch});
+                });
 
-                for (let key in state.repositories[repository].pullRequests) {
-                    if (!state.repositories[repository].pullRequests.hasOwnProperty(key)) {
-                        continue;
-                    }
-
-                    dispatch('loadCommits', {repository: repository, pullRequest: key});
-                }
+                Object.keys(state.repositories[repository].pullRequests).forEach(pullRequest => {
+                    dispatch('loadCommits', {repository: repository, pullRequest: pullRequest});
+                });
             };
 
             if (isIssetMaster) {
