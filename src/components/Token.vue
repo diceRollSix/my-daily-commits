@@ -10,7 +10,7 @@
 </template>
 
 <script>
-    import {mapActions} from 'vuex'
+    import {mapActions, mapState} from 'vuex'
 
     export default {
         name: 'token',
@@ -20,9 +20,9 @@
             }
         },
         computed: {
-            token: function () {
-                return this.$store.state.token;
-            }
+            ...mapState({
+                token: state => state.settings.token
+            })
         },
         methods: {
             ...mapActions(['saveToken'])

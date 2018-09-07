@@ -1,13 +1,15 @@
+import {DATE_TYPE} from '../../helpers'
+
 export default {
     state: {
         token: '',
-        dateType: '3',
+        dateType: DATE_TYPE.YESTERDAY,
 
         showMergeCommits: false,
         showEmptySources: false,
         showEmptyRepositories: false,
     },
-    mutation: {
+    mutations: {
         saveToken(state, token) {
             state.token = token;
         },
@@ -29,20 +31,19 @@ export default {
             if (token.length === 0) {
                 return;
             }
-            return commit('saveToken', token);
+            commit('saveToken', token);
         },
         saveDateType({commit}, dateType) {
-            return commit('saveDateType', dateType);
+            commit('saveDateType', dateType);
         },
         saveShowMergeCommits({commit}, showMergeCommits) {
-            return commit('saveShowMergeCommits', showMergeCommits);
+            commit('saveShowMergeCommits', showMergeCommits);
         },
         saveShowEmptySources({commit}, showEmptySources) {
-            return commit('saveShowEmptySources', showEmptySources);
+            commit('saveShowEmptySources', showEmptySources);
         },
         saveShowEmptyRepositories({commit}, showEmptyRepositories) {
-            return commit('saveShowEmptyRepositories', showEmptyRepositories);
+            commit('saveShowEmptyRepositories', showEmptyRepositories);
         },
-
     }
 }

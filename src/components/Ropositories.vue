@@ -43,23 +43,17 @@
 </template>
 
 <script>
-    import {mapActions} from 'vuex'
+    import {mapActions, mapState} from 'vuex'
 
     export default {
         name: 'repositories',
         computed: {
-            repositories: function () {
-                return this.$store.state.repositories;
-            },
-            showMergeCommits: function () {
-                return this.$store.state.showMergeCommits;
-            },
-            showEmptySources: function () {
-                return this.$store.state.showEmptySources;
-            },
-            showEmptyRepositories: function () {
-                return this.$store.state.showEmptyRepositories;
-            },
+            ...mapState({
+                repositories: state => state.repositories.repositories,
+                showMergeCommits: state => state.settings.showMergeCommits,
+                showEmptySources: state => state.settings.showMergeCommits,
+                showEmptyRepositories: state => state.settings.showMergeCommits,
+            })
         },
         methods: {
             ...mapActions(['loadUserCommitSourceData']),
@@ -111,7 +105,7 @@
     }
 </script>
 
-<style scoped>
+<style>
     .branch {
         margin-left: 20px;
     }

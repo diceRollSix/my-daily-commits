@@ -1,3 +1,10 @@
+const DATE_TYPE = {
+    PREVIOUS_WEEK: '1',
+    CURRENT_WEEK: '2',
+    YESTERDAY: '3',
+    TODAY: '4',
+};
+
 /**
  * Date since by date type.
  *
@@ -14,23 +21,21 @@ function getSinceDateFromDateType(dateType, returnDate) {
     let date = new Date();
     date.setHours(0, 0, 0, 0);
 
-    //TODO date type to constance
-
     let deyOfWeek = (date.getDay() === 0) ? 6 : (date.getDay() - 1);
     switch (dateType) {
-        case '1':
+        case DATE_TYPE.PREVIOUS_WEEK:
             //start of previous week
             date.setDate(date.getDate() - deyOfWeek - 7);
             break;
-        case '2':
+        case DATE_TYPE.CURRENT_WEEK:
             //start of current week
             date.setDate(date.getDate() - deyOfWeek);
             break;
-        case '3':
+        case DATE_TYPE.YESTERDAY:
             //Yesterday
             date.setDate(date.getDate() - 1);
             break;
-        case '4':
+        case DATE_TYPE.TODAY:
             //Today
             break;
     }
@@ -57,24 +62,22 @@ function getUntilDateFromDateType(dateType, returnDate) {
 
     let date = new Date();
 
-    //TODO date type to constance
-
     let deyOfWeek = (date.getDay() === 0) ? 6 : (date.getDay() - 1);
     switch (dateType) {
-        case '1':
+        case DATE_TYPE.PREVIOUS_WEEK:
             //end of previous week
             date.setDate(date.getDate() - deyOfWeek - 1);
             date.setHours(23, 59, 59, 999);
             break;
-        case '2':
+        case DATE_TYPE.CURRENT_WEEK:
             //end of current week (Today)
             break;
-        case '3':
+        case DATE_TYPE.YESTERDAY:
             //end of yesterday
             date.setDate(date.getDate() - 1);
             date.setHours(23, 59, 59, 999);
             break;
-        case '4':
+        case DATE_TYPE.TODAY:
             //end of today
             break;
     }
@@ -86,4 +89,4 @@ function getUntilDateFromDateType(dateType, returnDate) {
     return date.toISOString();
 }
 
-export {getSinceDateFromDateType, getUntilDateFromDateType};
+export {getSinceDateFromDateType, getUntilDateFromDateType, DATE_TYPE};
