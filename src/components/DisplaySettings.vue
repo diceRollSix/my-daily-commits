@@ -21,7 +21,7 @@
         computed: {
             showMergeCommits: {
                 get() {
-                    return this.$store.state.showMergeCommits
+                    return this.$store.state.settings.showMergeCommits
                 },
                 set(value) {
                     this.$store.dispatch('saveShowMergeCommits', value)
@@ -29,7 +29,7 @@
             },
             showEmptySources: {
                 get() {
-                    return this.$store.state.showEmptySources
+                    return this.$store.state.settings.showEmptySources
                 },
                 set(value) {
                     this.$store.dispatch('saveShowEmptySources', value)
@@ -37,7 +37,7 @@
             },
             showEmptyRepositories: {
                 get() {
-                    return this.$store.state.showEmptyRepositories
+                    return this.$store.state.settings.showEmptyRepositories
                 },
                 set(value) {
                     this.$store.dispatch('saveShowEmptyRepositories', value)

@@ -10,13 +10,7 @@
                     v-show="showSource(branch)"
                     class="branch"
             >{{ branch.name }}
-                <div
-                        v-for="commit in branch.commits"
-                        v-show="showCommit(commit.message)"
-
-                        class="commit"
-                >{{ commit.date }} {{ commit.message }}
-                </div>
+                <commits :commits="branch.commits"/>
             </div>
 
 
@@ -30,12 +24,7 @@
                     v-show="showSource(pullRequest)"
                     class="pull_request"
             >{{ pullRequest.title }}
-                <div
-                        v-for="commit in pullRequest.commits"
-                        v-show="showCommit(commit.message)"
-                        class="commit"
-                >{{ commit.date }} {{ commit.message }}
-                </div>
+                <commits :commits="pullRequest.commits"/>
             </div>
         </div>
         <button @click="loadUserCommitSourceData">Load repos with token</button>
@@ -44,22 +33,21 @@
 
 <script>
     import {mapActions, mapState} from 'vuex'
+    import Commits from "./Commits";
 
     export default {
         name: 'repositories',
+        components: {Commits},
         computed: {
             ...mapState({
                 repositories: state => state.repositories.repositories,
                 showMergeCommits: state => state.settings.showMergeCommits,
-                showEmptySources: state => state.settings.showMergeCommits,
-                showEmptyRepositories: state => state.settings.showMergeCommits,
+                showEmptySources: state => state.settings.showEmptySources,
+                showEmptyRepositories: state => state.settings.showEmptyRepositories,
             })
         },
         methods: {
             ...mapActions(['loadUserCommitSourceData']),
-            showCommit: function (message) {
-                return this.showMergeCommits || (message.indexOf('Merge branch') !== 0);
-            },
             showSource: function (source) {
                 if (!source.hasOwnProperty('commits')) {
                     return true;
@@ -108,10 +96,6 @@
 <style>
     .branch {
         margin-left: 20px;
-    }
-
-    .commit {
-        margin-left: 40px;
     }
 
     .pull_request {
