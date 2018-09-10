@@ -9,7 +9,7 @@
                     v-for="branch in repo.branches"
                     v-show="showSource(branch)"
                     class="branch"
-            >{{ branch.name }}
+            >{{ branch.name }} <span v-if="branch.hasDuplicateCommits">(With Duplication)</span>
                 <commits :commits="branch.commits"/>
             </div>
 
@@ -23,7 +23,7 @@
                     v-for="pullRequest in repo.pullRequests"
                     v-show="showSource(pullRequest)"
                     class="pull_request"
-            >{{ pullRequest.title }}
+            >{{ pullRequest.title }} <span v-if="pullRequest.hasDuplicateCommits">(With Duplication)</span>
                 <commits :commits="pullRequest.commits"/>
             </div>
         </div>

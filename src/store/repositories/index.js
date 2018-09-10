@@ -2,6 +2,13 @@ import Vue from "vue";
 import {getSinceDateFromDateType, getUntilDateFromDateType} from "../../helpers";
 import axios from "axios";
 
+/**
+ * Commits in loading progress. For detecting duplication.
+ *
+ * @type {{}}
+ */
+let loadedCommits = {};
+
 export default {
     state: {
         user: '',
@@ -69,17 +76,8 @@ export default {
 
             let commitsTmp = [];
 
-            const masterCommits = state.repositories[repository].branches.hasOwnProperty('master')
-                ? state.repositories[repository].branches.master.commits
-                : [];
-
-            let masterCommitsObject = {};
-            masterCommits.forEach(commit => {
-                masterCommitsObject[commit.sha] = true;
-            });
-
             commits.forEach(commit => {
-                if (!refObject.hasDuplicateCommits && masterCommitsObject.hasOwnProperty(commit.sha)) {
+                if (!refObject.hasDuplicateCommits && loadedCommits.hasOwnProperty(commit.sha)) {
                     refObject.hasDuplicateCommits = true;
                 }
 
@@ -88,9 +86,10 @@ export default {
                     date: commit.commit.committer.date,
                     sha: commit.sha,
                     htmlUrl: commit.html_url,
-                    duplication: masterCommitsObject.hasOwnProperty(commit.sha)
+                    duplication: loadedCommits.hasOwnProperty(commit.sha)
                 };
                 commitsTmp.push(item);
+                loadedCommits[commit.sha] = true;
             });
 
             refObject.commits = commitsTmp;
@@ -113,6 +112,8 @@ export default {
                 data: data,
                 url: 'https://api.github.com/graphql'
             };
+
+            loadedCommits = {};
 
             axios(options)
                 .then(response => {
