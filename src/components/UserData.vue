@@ -1,6 +1,6 @@
 <template>
     <div v-if="user">
-        <img :src="avatarUrl" alt="Avatar">
+        <img :src="avatarUrl" class="avatar" alt="Avatar">
         <div>{{ user }}</div>
     </div>
 </template>
@@ -20,4 +20,8 @@
 </script>
 
 <style scoped>
+    .avatar{
+        width: 50px;
+        height: 50px;
+    }
 </style>

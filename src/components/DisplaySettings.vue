@@ -1,28 +1,33 @@
 <template>
     <div>
         <div>
-            <input type="checkbox" id="show_duplicated_commits" v-model="showDuplicatedCommits">
+            <input type="checkbox" id="show_duplicated_commits" :disabled="loadingProcess" v-model="showDuplicatedCommits">
             <label for="show_duplicated_commits">Show duplicated commits</label>
         </div>
         <div>
-            <input type="checkbox" id="show_merge_commits" v-model="showMergeCommits">
+            <input type="checkbox" id="show_merge_commits" :disabled="loadingProcess" v-model="showMergeCommits">
             <label for="show_merge_commits">Show merge commits</label>
         </div>
         <div>
-            <input type="checkbox" id="show_empty_sources" v-model="showEmptySources">
+            <input type="checkbox" id="show_empty_sources" :disabled="loadingProcess" v-model="showEmptySources">
             <label for="show_empty_sources">Show empty sources</label>
         </div>
         <div>
-            <input type="checkbox" id="show_empty_repositories" v-model="showEmptyRepositories">
+            <input type="checkbox" id="show_empty_repositories" :disabled="loadingProcess" v-model="showEmptyRepositories">
             <label for="show_empty_repositories">Show empty repositories</label>
         </div>
     </div>
 </template>
 
 <script>
+    import {mapState} from 'vuex'
+
     export default {
         name: 'display-settings',
         computed: {
+            ...mapState({
+                loadingProcess: state => state.repositories.loadingProcess
+            }),
             showDuplicatedCommits: {
                 get() {
                     return this.$store.state.settings.showDuplicatedCommits

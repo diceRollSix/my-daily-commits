@@ -144,6 +144,9 @@ export default {
             commit('setLoadingProcess', false);
         },
         loadUserCommitSourceData({state, commit, dispatch, rootState}) {
+            if (state.loadingProcess) {
+                return;
+            }
             if (typeof rootState.settings.token !== 'string' || rootState.settings.token.length === 0) {
                 return;
             }

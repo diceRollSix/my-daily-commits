@@ -1,5 +1,9 @@
 <template>
-    <div>
+    <div class="repositories">
+        <loading/>
+        <errors/>
+        <user-avatar/>
+        <since-until-date/>
         <div
                 v-for="repo in repositories"
                 v-show="showRepository(repo)"
@@ -25,17 +29,20 @@
                 <commits :commits="pullRequest.commits"/>
             </div>
         </div>
-        <button @click="loadUserCommitSourceData">Load repos with token</button>
     </div>
 </template>
 
 <script>
-    import {mapActions, mapState} from 'vuex'
+    import {mapState} from 'vuex'
     import Commits from "./Commits";
+    import Loading from "./Loading";
+    import Errors from "./Errors";
+    import UserAvatar from "./UserData";
+    import SinceUntilDate from "./SinceUntilDate";
 
     export default {
         name: 'repositories',
-        components: {Commits},
+        components: {SinceUntilDate, UserAvatar, Errors, Loading, Commits},
         computed: {
             ...mapState({
                 repositories: state => state.repositories.repositories,
@@ -45,7 +52,6 @@
             })
         },
         methods: {
-            ...mapActions(['loadUserCommitSourceData']),
             showSource: function (source) {
                 if (!source.hasOwnProperty('commits')) {
                     return true;
@@ -92,6 +98,11 @@
 </script>
 
 <style>
+    .repositories {
+        height: 700px;
+        overflow-y: scroll;
+    }
+
     .branch {
         margin-left: 20px;
     }

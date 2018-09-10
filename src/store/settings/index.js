@@ -31,25 +31,44 @@ export default {
         },
     },
     actions: {
-        saveToken({commit}, token) {
+        saveToken({commit, rootState}, token) {
+            if (rootState.repositories.loadingProcess) {
+                return;
+            }
+
             if (token.length === 0) {
                 return;
             }
             commit('saveToken', token);
         },
-        saveDateType({commit}, dateType) {
+        saveDateType({commit, rootState}, dateType) {
+            if (rootState.repositories.loadingProcess) {
+                return;
+            }
             commit('saveDateType', dateType);
         },
-        saveShowMergeCommits({commit}, showMergeCommits) {
+        saveShowMergeCommits({commit, rootState}, showMergeCommits) {
+            if (rootState.repositories.loadingProcess) {
+                return;
+            }
             commit('saveShowMergeCommits', showMergeCommits);
         },
-        saveShowEmptySources({commit}, showEmptySources) {
+        saveShowEmptySources({commit, rootState}, showEmptySources) {
+            if (rootState.repositories.loadingProcess) {
+                return;
+            }
             commit('saveShowEmptySources', showEmptySources);
         },
-        saveShowEmptyRepositories({commit}, showEmptyRepositories) {
+        saveShowEmptyRepositories({commit, rootState}, showEmptyRepositories) {
+            if (rootState.repositories.loadingProcess) {
+                return;
+            }
             commit('saveShowEmptyRepositories', showEmptyRepositories);
         },
-        saveShowDuplicatedCommits({commit}, showDuplicatedCommits) {
+        saveShowDuplicatedCommits({commit, rootState}, showDuplicatedCommits) {
+            if (rootState.repositories.loadingProcess) {
+                return;
+            }
             commit('saveShowDuplicatedCommits', showDuplicatedCommits);
         },
     }

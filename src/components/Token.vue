@@ -4,8 +4,13 @@
         <div><input
                 v-model="tokenNew"
                 type="text"
+                :disabled="loadingProcess"
         ></div>
-        <button @click="saveToken(tokenNew)">Save GitHub token</button>
+        <button
+                @click="saveToken(tokenNew)"
+                :disabled="loadingProcess"
+        >Save GitHub token
+        </button>
     </div>
 </template>
 
@@ -21,7 +26,8 @@
         },
         computed: {
             ...mapState({
-                token: state => state.settings.token
+                token: state => state.settings.token,
+                loadingProcess: state => state.repositories.loadingProcess
             })
         },
         methods: {
