@@ -12,11 +12,13 @@ let loadedCommits = {};
 export default {
     state: {
         user: '',
+        avatarUrl: '',
         repositories: {},
     },
     mutations: {
-        setUser(state, login) {
+        setUser(state, {login, avatarUrl}) {
             state.user = login;
+            state.avatarUrl = avatarUrl;
         },
         setRepository(state, {repository, since}) {
             const nameWithOwner = repository.nameWithOwner;
@@ -103,7 +105,7 @@ export default {
                 return;
             }
 
-            const query = '{ viewer { login name repositories(first: 20) { totalCount edges { node { nameWithOwner isPrivate refs(first: 20, refPrefix: "refs/heads/") { totalCount edges { node { name } } } pullRequests(states: MERGED, first: 30, orderBy:{field:UPDATED_AT, direction:DESC}) { edges { node { databaseId number title headRefOid mergedAt } } } } } } } }';
+            const query = '{ viewer { login avatarUrl name repositories(first: 20) { totalCount edges { node { nameWithOwner isPrivate refs(first: 20, refPrefix: "refs/heads/") { totalCount edges { node { name } } } pullRequests(states: MERGED, first: 30, orderBy:{field:UPDATED_AT, direction:DESC}) { edges { node { databaseId number title headRefOid mergedAt } } } } } } } }';
 
             const data = {'query': query};
             const options = {
@@ -119,7 +121,7 @@ export default {
                 .then(response => {
                     //TODO check error
                     const viewer = response.data.data.viewer;
-                    commit('setUser', viewer.login);
+                    commit('setUser', viewer);
 
                     const sinceTime = getSinceDateFromDateType(rootState.settings.dateType, true).getTime();
 

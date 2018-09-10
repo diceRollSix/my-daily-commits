@@ -9,10 +9,10 @@
         name: 'since-until-date',
         computed: {
             dateSince: function () {
-                return getSinceDateFromDateType(this.$store.state.dateType);
+                return getSinceDateFromDateType(this.$store.state.settings.dateType);
             },
             dateUntil: function () {
-                return getUntilDateFromDateType(this.$store.state.dateType);
+                return getUntilDateFromDateType(this.$store.state.settings.dateType);
             }
         },
     }

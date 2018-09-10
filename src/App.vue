@@ -1,5 +1,6 @@
 <template>
     <div id="app">
+        <user-avatar/>
         <since-until-date/>
         <repositories/>
         <display-settings/>
@@ -15,11 +16,13 @@
     import SinceUntilDate from "./components/SinceUntilDate";
     import DisplaySettings from "./components/DisplaySettings";
     import store from './store/';
+    import UserAvatar from "./components/UserData";
 
     export default {
         name: 'app',
         store,
         components: {
+            UserAvatar,
             DisplaySettings,
             SinceUntilDate,
             ChooseDateType,
