@@ -12,8 +12,6 @@
             >{{ branch.name }} <span v-if="branch.hasDuplicateCommits">(With Duplication)</span>
                 <commits :commits="branch.commits"/>
             </div>
-
-
             <div
                     v-show="showPullRequestsTitle(repo.pullRequests)"
                     class="pull_request_title"

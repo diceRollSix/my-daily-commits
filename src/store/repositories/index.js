@@ -9,6 +9,13 @@ import axios from "axios";
  */
 let loadedCommits = {};
 
+/**
+ * How many request send
+ *
+ * @type {number}
+ */
+let loadingProcessCount = 0;
+
 export default {
     state: {
         user: '',
@@ -16,11 +23,15 @@ export default {
         repositories: {},
 
         errors: [],
+        loadingProcess: false
     },
     mutations: {
         setUser(state, {login, avatarUrl}) {
             state.user = login;
             state.avatarUrl = avatarUrl;
+        },
+        setLoadingProcess(state, status) {
+            state.loadingProcess = status;
         },
         setError(state, error) {
             if (typeof error === 'undefined') {
@@ -121,8 +132,17 @@ export default {
         }
     },
     actions: {
-        //TODO каждое действие сделать атомарной загрузкой
-        //создать действие из цепочки действий
+        startLoadingProcess() {
+            loadingProcessCount++;
+        },
+        endLoadingProcess({commit}) {
+            loadingProcessCount--;
+            if (loadingProcessCount > 0) {
+                return;
+            }
+
+            commit('setLoadingProcess', false);
+        },
         loadUserCommitSourceData({state, commit, dispatch, rootState}) {
             if (typeof rootState.settings.token !== 'string' || rootState.settings.token.length === 0) {
                 return;
@@ -140,10 +160,11 @@ export default {
 
             commit('setError');
             loadedCommits = {};
+            commit('setLoadingProcess', true);
+            dispatch('startLoadingProcess');
 
-            axios(options)
+            return axios(options)
                 .then(response => {
-                    //TODO check error
                     const viewer = response.data.data.viewer;
                     commit('setUser', viewer);
 
@@ -157,7 +178,8 @@ export default {
                         dispatch('loadCommitsForRepository', fullName);
                     });
                 })
-                .catch((error) => commit('setError', error));
+                .catch((error) => commit('setError', error))
+                .finally(() => dispatch('endLoadingProcess'));
         },
         loadCommitsForRepository({dispatch, state, rootState}, repository) {
             if (typeof rootState.settings.token !== 'string' || rootState.settings.token.length === 0) {
@@ -194,7 +216,7 @@ export default {
                 loadCommits();
             }
         },
-        loadCommits({state, commit, rootState}, {repository, branch, pullRequest}) {
+        loadCommits({state, commit, rootState, dispatch}, {repository, branch, pullRequest}) {
             if (typeof rootState.settings.token !== 'string' || rootState.settings.token.length === 0) {
                 return;
             }
@@ -216,6 +238,7 @@ export default {
                 ? branch
                 : state.repositories[repository].pullRequests[pullRequest].head;
 
+            dispatch('startLoadingProcess');
             return axios.get(url, {
                 params: {
                     access_token: rootState.settings.token,
@@ -232,7 +255,8 @@ export default {
                     branch: branch,
                     pullRequest: pullRequest
                 }))
-                .catch((error) => console.log(error));
+                .catch((error) => commit('setError', error))
+                .finally(() => dispatch('endLoadingProcess'))
         },
     }
 }
