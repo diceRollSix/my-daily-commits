@@ -1,5 +1,6 @@
 <template>
     <div id="app">
+        <errors/>
         <user-avatar/>
         <since-until-date/>
         <repositories/>
@@ -17,11 +18,13 @@
     import DisplaySettings from "./components/DisplaySettings";
     import store from './store/';
     import UserAvatar from "./components/UserData";
+    import Errors from "./components/Errors";
 
     export default {
         name: 'app',
         store,
         components: {
+            Errors,
             UserAvatar,
             DisplaySettings,
             SinceUntilDate,

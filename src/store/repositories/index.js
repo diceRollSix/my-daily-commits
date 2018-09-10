@@ -14,11 +14,34 @@ export default {
         user: '',
         avatarUrl: '',
         repositories: {},
+
+        errors: [],
     },
     mutations: {
         setUser(state, {login, avatarUrl}) {
             state.user = login;
             state.avatarUrl = avatarUrl;
+        },
+        setError(state, error) {
+            if (typeof error === 'undefined') {
+                state.errors = '';
+                return;
+            }
+
+            let errorText = [];
+            if (error.hasOwnProperty('data') && error.data.hasOwnProperty('message')) {
+                errorText.push(error.data.message);
+            }
+
+            if (error.hasOwnProperty('response')) {
+                errorText.push(error.message);
+            }
+
+            if (error.hasOwnProperty('message')) {
+                errorText.push(error.response.data.message);
+            }
+
+            state.errors = errorText;
         },
         setRepository(state, {repository, since}) {
             const nameWithOwner = repository.nameWithOwner;
@@ -115,6 +138,7 @@ export default {
                 url: 'https://api.github.com/graphql'
             };
 
+            commit('setError');
             loadedCommits = {};
 
             axios(options)
@@ -133,7 +157,7 @@ export default {
                         dispatch('loadCommitsForRepository', fullName);
                     });
                 })
-                .catch((error) => console.log(error));
+                .catch((error) => commit('setError', error));
         },
         loadCommitsForRepository({dispatch, state, rootState}, repository) {
             if (typeof rootState.settings.token !== 'string' || rootState.settings.token.length === 0) {
