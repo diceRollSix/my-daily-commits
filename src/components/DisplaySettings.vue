@@ -1,6 +1,10 @@
 <template>
     <div>
         <div>
+            <input type="checkbox" id="show_duplicated_commits" v-model="showDuplicatedCommits">
+            <label for="show_duplicated_commits">Show duplicated commits</label>
+        </div>
+        <div>
             <input type="checkbox" id="show_merge_commits" v-model="showMergeCommits">
             <label for="show_merge_commits">Show merge commits</label>
         </div>
@@ -19,6 +23,14 @@
     export default {
         name: 'display-settings',
         computed: {
+            showDuplicatedCommits: {
+                get() {
+                    return this.$store.state.settings.showDuplicatedCommits
+                },
+                set(value) {
+                    this.$store.dispatch('saveShowDuplicatedCommits', value)
+                }
+            },
             showMergeCommits: {
                 get() {
                     return this.$store.state.settings.showMergeCommits

@@ -19,7 +19,9 @@ export default {
             repository.refs.edges.forEach(branch => {
                 const item = {
                     name: branch.node.name,
-                    commits: []
+                    commits: [],
+                    hasDuplicateCommits: false,
+
                 };
                 Vue.set(branches, branch.node.name, item);
             });
@@ -40,7 +42,8 @@ export default {
                     title: pullRequest.node.title,
                     mergedAt: mergedAt,
                     head: pullRequest.node.headRefOid,
-                    commits: []
+                    commits: [],
+                    hasDuplicateCommits: false,
                 };
                 Vue.set(pullRequests, pullRequest.node.number, item);
             });
@@ -55,6 +58,15 @@ export default {
             Vue.set(state.repositories, nameWithOwner, item);
         },
         setCommits(state, {commits, repository, branch, pullRequest}) {
+            let refObject;
+            if (typeof branch !== 'undefined') {
+                refObject = state.repositories[repository].branches[branch];
+            } else if (typeof pullRequest !== 'undefined') {
+                refObject = state.repositories[repository].pullRequests[pullRequest];
+            } else {
+                return;
+            }
+
             let commitsTmp = [];
 
             const masterCommits = state.repositories[repository].branches.hasOwnProperty('master')
@@ -67,25 +79,21 @@ export default {
             });
 
             commits.forEach(commit => {
-                if (masterCommitsObject.hasOwnProperty(commit.sha)) {
-                    //Already in master - skip commit
-                    return;
+                if (!refObject.hasDuplicateCommits && masterCommitsObject.hasOwnProperty(commit.sha)) {
+                    refObject.hasDuplicateCommits = true;
                 }
 
                 const item = {
                     message: commit.commit.message,
                     date: commit.commit.committer.date,
                     sha: commit.sha,
-                    htmlUrl: commit.html_url
+                    htmlUrl: commit.html_url,
+                    duplication: masterCommitsObject.hasOwnProperty(commit.sha)
                 };
                 commitsTmp.push(item);
             });
 
-            if (typeof branch !== 'undefined') {
-                state.repositories[repository].branches[branch].commits = commitsTmp;
-            } else if (typeof pullRequest !== 'undefined') {
-                state.repositories[repository].pullRequests[pullRequest].commits = commitsTmp;
-            }
+            refObject.commits = commitsTmp;
         }
     },
     actions: {

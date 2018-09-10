@@ -16,6 +16,7 @@ export default new Vuex.Store({
             paths: [
                 'settings.token',
                 'settings.dateType',
+                'settings.showDuplicatedCommits',
                 'settings.showMergeCommits',
                 'settings.showEmptySources',
                 'settings.showEmptyRepositories'

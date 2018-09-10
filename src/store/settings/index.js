@@ -8,6 +8,7 @@ export default {
         showMergeCommits: false,
         showEmptySources: false,
         showEmptyRepositories: false,
+        showDuplicatedCommits: false,
     },
     mutations: {
         saveToken(state, token) {
@@ -24,6 +25,9 @@ export default {
         },
         saveShowEmptyRepositories(state, showEmptyRepositories) {
             state.showEmptyRepositories = showEmptyRepositories;
+        },
+        saveShowDuplicatedCommits(state, showDuplicatedCommits) {
+            state.showDuplicatedCommits = showDuplicatedCommits;
         },
     },
     actions: {
@@ -44,6 +48,9 @@ export default {
         },
         saveShowEmptyRepositories({commit}, showEmptyRepositories) {
             commit('saveShowEmptyRepositories', showEmptyRepositories);
+        },
+        saveShowDuplicatedCommits({commit}, showDuplicatedCommits) {
+            commit('saveShowDuplicatedCommits', showDuplicatedCommits);
         },
     }
 }
