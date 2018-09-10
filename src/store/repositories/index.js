@@ -75,7 +75,8 @@ export default {
                 const item = {
                     message: commit.commit.message,
                     date: commit.commit.committer.date,
-                    sha: commit.sha
+                    sha: commit.sha,
+                    htmlUrl: commit.html_url
                 };
                 commitsTmp.push(item);
             });
