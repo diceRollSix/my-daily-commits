@@ -1,6 +1,6 @@
 # My daily commits
 
-### Commits for a day on one page.  
+### Commits per a day on one page.  
 App can gather commits for day/current week/previous week.  
 I use it for stand-up meeting.  
 App helps me stop writing meaningless commit messages.  
