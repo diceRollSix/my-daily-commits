@@ -3,6 +3,9 @@
         <input type="radio" id="prev_week" :value="DATE_TYPE.PREVIOUS_WEEK" :disabled="loadingProcess" v-model="dateType">
         <label for="prev_week">Previous Week</label>
         <br>
+        <input type="radio" id="last_friday" :value="DATE_TYPE.LAST_FRIDAY" :disabled="loadingProcess" v-model="dateType">
+        <label for="last_friday">LastFriday</label>
+        <br>
         <input type="radio" id="week" :value="DATE_TYPE.CURRENT_WEEK" :disabled="loadingProcess" v-model="dateType">
         <label for="week">Current Week</label>
         <br>

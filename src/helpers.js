@@ -3,6 +3,7 @@ const DATE_TYPE = {
     CURRENT_WEEK: '2',
     YESTERDAY: '3',
     TODAY: '4',
+    LAST_FRIDAY: '5',
 };
 
 /**
@@ -26,6 +27,10 @@ function getSinceDateFromDateType(dateType, returnDate) {
         case DATE_TYPE.PREVIOUS_WEEK:
             //start of previous week
             date.setDate(date.getDate() - deyOfWeek - 7);
+            break;
+        case DATE_TYPE.LAST_FRIDAY:
+            //start friday of previous week
+            date.setDate(date.getDate() - deyOfWeek - 3);
             break;
         case DATE_TYPE.CURRENT_WEEK:
             //start of current week
@@ -67,6 +72,11 @@ function getUntilDateFromDateType(dateType, returnDate) {
         case DATE_TYPE.PREVIOUS_WEEK:
             //end of previous week
             date.setDate(date.getDate() - deyOfWeek - 1);
+            date.setHours(23, 59, 59, 999);
+            break;
+        case DATE_TYPE.LAST_FRIDAY:
+            //end friday of previous week
+            date.setDate(date.getDate() - deyOfWeek - 3);
             date.setHours(23, 59, 59, 999);
             break;
         case DATE_TYPE.CURRENT_WEEK:
