@@ -48,6 +48,7 @@
                 repositories: state => state.repositories.repositories,
                 showMergeCommits: state => state.settings.showMergeCommits,
                 showEmptySources: state => state.settings.showEmptySources,
+                showDuplicatedCommits: state => state.settings.showDuplicatedCommits,
                 showEmptyRepositories: state => state.settings.showEmptyRepositories,
             })
         },
@@ -57,7 +58,20 @@
                     return true;
                 }
 
-                return this.showEmptySources || (source.commits.length !== 0);
+                let showEmptySources = this.showEmptySources || (source.commits.length !== 0);
+                if (source.commits.length === 0) {
+                    return showEmptySources;
+                }
+
+                let duplicationCommitsCount = 0;
+                source.commits.forEach(commit => {
+                    if (commit.duplication) {
+                        duplicationCommitsCount++;
+                    }
+                });
+                let onlyDuplicationCommits = duplicationCommitsCount === source.commits.length;
+
+                return showEmptySources && (this.showDuplicatedCommits || !onlyDuplicationCommits);
             },
             showPullRequestsTitle: function (pullRequests) {
                 if (this.showEmptySources) {
