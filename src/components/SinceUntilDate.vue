@@ -1,5 +1,5 @@
 <template>
-    <div>{{dateSince}} - {{dateUntil}}</div>
+    <div>{{dateSince | formattedDate}} - {{dateUntil | formattedDate}}</div>
 </template>
 
 <script>

@@ -4,7 +4,7 @@
                 v-for="commit in commits"
                 v-show="showCommit(commit)"
                 class="commit"
-        >{{ commit.date }} {{ commit.message }} <a target="_blank" :href="commit.htmlUrl">{{ getSmallSha(commit.sha) }}</a>
+        >{{ commit.date | formattedDate }} {{ commit.message }} <a target="_blank" :href="commit.htmlUrl">{{ getSmallSha(commit.sha) }}</a>
         </div>
     </div>
 </template>
