@@ -20,7 +20,7 @@ Vue.filter('formattedDate', function (dateTimeString) {
     let dateString = date.getDate() + '.' + padStart(date.getMonth() + 1, 2, '0') + '.' + date.getFullYear();
     let timeString = padStart(date.getHours(), 2, '0') + ':' + padStart(date.getMinutes(), 2, '0') + ':' + padStart(date.getSeconds(), 2, '0');
     let offset = -date.getTimezoneOffset();
-    let timezoneString = 'GMT ' + (offset > 0 ? '+' : '-') + (offset / 60).toString();
+    let timezoneString = 'GMT' + (offset > 0 ? '+' : '-') + (offset / 60).toString();
     return dateString + ' ' + timeString + ' ' + timezoneString;
 });
 
