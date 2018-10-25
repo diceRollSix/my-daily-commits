@@ -21,11 +21,15 @@ export default {
         user: '',
         avatarUrl: '',
         repositories: {},
+        selectedDateType: null,
 
         errors: [],
         loadingProcess: false
     },
     mutations: {
+        selectDateType(state, dateType) {
+            state.selectedDateType = dateType;
+        },
         setUser(state, {login, avatarUrl}) {
             state.user = login;
             state.avatarUrl = avatarUrl;
@@ -164,6 +168,7 @@ export default {
             commit('setError');
             loadedCommits = {};
             commit('setLoadingProcess', true);
+            commit('selectDateType', rootState.settings.dateType);
             dispatch('startLoadingProcess');
 
             return axios(options)

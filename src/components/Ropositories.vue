@@ -3,7 +3,7 @@
         <loading/>
         <errors/>
         <user-avatar/>
-        <since-until-date/>
+        <selected-since-until-date/>
         <div
                 v-for="repo in repositories"
                 v-show="showRepository(repo)"
@@ -38,11 +38,11 @@
     import Loading from "./Loading";
     import Errors from "./Errors";
     import UserAvatar from "./UserData";
-    import SinceUntilDate from "./SinceUntilDate";
+    import SelectedSinceUntilDate from "./SelectedSinceUntilDate";
 
     export default {
         name: 'repositories',
-        components: {SinceUntilDate, UserAvatar, Errors, Loading, Commits},
+        components: {SelectedSinceUntilDate, UserAvatar, Errors, Loading, Commits},
         computed: {
             ...mapState({
                 repositories: state => state.repositories.repositories,
