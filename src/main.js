@@ -1,6 +1,8 @@
 import Vue from 'vue'
 import App from './App.vue'
 import store from './store'
+import Vuetify from 'vuetify'
+import 'vuetify/dist/vuetify.min.css'
 
 Vue.config.productionTip = false;
 
@@ -8,10 +10,10 @@ function padStart(input, length, symbol = ' ') {
     let str = input.toString();
 
     while (str.length < length) {
-        str = symbol + str
+        str = symbol + str;
     }
 
-    return str
+    return str;
 }
 
 Vue.filter('formattedDate', function (dateTimeString) {
@@ -24,6 +26,7 @@ Vue.filter('formattedDate', function (dateTimeString) {
     return dateString + ' ' + timeString + ' ' + timezoneString;
 });
 
+Vue.use(Vuetify);
 
 new Vue({
     el: '#app',
