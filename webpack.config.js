@@ -8,6 +8,9 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
 
+//Clear hashed files
+const CleanWebpackPlugin = require('clean-webpack-plugin');
+
 module.exports = (env, argv) => {
     const isProd = argv.mode === 'production';
     const baseUrl = isProd
@@ -61,6 +64,9 @@ module.exports = (env, argv) => {
             ]
         },
         plugins: [
+            new CleanWebpackPlugin(['dist/*.*'], {
+                beforeEmit: true
+            }),
             new VueLoaderPlugin(),
             new HtmlWebpackPlugin({
                 filename: 'index.html',
