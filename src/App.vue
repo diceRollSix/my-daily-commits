@@ -1,11 +1,25 @@
 <template>
-    <div id="app">
-        <repositories/>
-        <load-button/>
-        <display-settings/>
-        <token/>
-        <choose-date-type/>
-    </div>
+    <v-app id="inspire">
+        <v-toolbar color="black" dark fixed app>
+            <v-toolbar-title>My Daily Commits</v-toolbar-title>
+        </v-toolbar>
+        <v-content>
+            <v-container fluid fill-height>
+                <v-layout
+                        justify-center
+                        align-center
+                >
+                    <v-flex text-xs-center>
+                        <repositories/>
+                        <load-button/>
+                        <display-settings/>
+                        <token/>
+                        <choose-date-type/>
+                    </v-flex>
+                </v-layout>
+            </v-container>
+        </v-content>
+    </v-app>
 </template>
 
 <script>
