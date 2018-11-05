@@ -6,7 +6,7 @@
             width="300"
     >
         <v-card
-                color="black"
+                color="primary"
                 dark
         >
             <v-card-text>

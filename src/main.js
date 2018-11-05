@@ -26,7 +26,14 @@ Vue.filter('formattedDate', function (dateTimeString) {
     return dateString + ' ' + timeString + ' ' + timezoneString;
 });
 
-Vue.use(Vuetify);
+Vue.use(Vuetify, {
+    theme: {
+        primary: 'black',
+        secondary: '#b0bec5',
+        accent: '#8c9eff',
+        error: '#b71c1c'
+    }
+});
 
 new Vue({
     el: '#app',

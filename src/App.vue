@@ -1,6 +1,6 @@
 <template>
     <v-app id="inspire">
-        <v-toolbar color="black" dark fixed app>
+        <v-toolbar color="primary" dark fixed app>
             <v-toolbar-title>My Daily Commits</v-toolbar-title>
         </v-toolbar>
         <v-content>
@@ -12,9 +12,7 @@
                     <v-flex text-xs-center>
                         <repositories/>
                         <load-button/>
-                        <display-settings/>
-                        <token/>
-                        <choose-date-type/>
+                        <app-settings/>
                     </v-flex>
                 </v-layout>
             </v-container>
@@ -23,22 +21,18 @@
 </template>
 
 <script>
-    import Token from "./components/Token"
     import Repositories from "./components/Ropositories";
-    import ChooseDateType from "./components/ChooseDateType";
-    import DisplaySettings from "./components/DisplaySettings";
     import store from "./store/";
     import LoadButton from "./components/LoadButton";
+    import AppSettings from "./components/AppSettings";
 
     export default {
         name: 'app',
         store,
         components: {
+            AppSettings,
             LoadButton,
-            DisplaySettings,
-            ChooseDateType,
             Repositories,
-            Token
         }
     }
 </script>
