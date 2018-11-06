@@ -1,9 +1,5 @@
 <template>
     <div class="repositories">
-        <loading/>
-        <errors/>
-        <user-avatar/>
-        <selected-since-until-date/>
         <div
                 v-for="repo in repositories"
                 v-show="showRepository(repo)"
@@ -35,14 +31,10 @@
 <script>
     import {mapState} from 'vuex'
     import Commits from "./Commits";
-    import Loading from "./Loading";
-    import Errors from "./Errors";
-    import UserAvatar from "./UserData";
-    import SelectedSinceUntilDate from "./SelectedSinceUntilDate";
 
     export default {
         name: 'repositories',
-        components: {SelectedSinceUntilDate, UserAvatar, Errors, Loading, Commits},
+        components: {Commits},
         computed: {
             ...mapState({
                 repositories: state => state.repositories.repositories,
