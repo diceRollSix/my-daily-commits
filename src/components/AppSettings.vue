@@ -1,6 +1,20 @@
 <template>
     <v-dialog v-model="appSettingsDialog" persistent max-width="600px">
-        <v-btn slot="activator" color="primary" dark>Open Settings</v-btn>
+        <v-fab-transition
+                slot="activator"
+        >
+            <v-btn
+                    color="orange"
+                    dark
+                    fab
+                    fixed
+                    bottom
+                    left
+            >
+                <v-icon>settings</v-icon>
+            </v-btn>
+        </v-fab-transition>
+
         <v-card>
             <v-toolbar dark color="primary">
                 <v-btn icon dark @click.native="appSettingsDialog = false">

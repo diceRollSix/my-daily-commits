@@ -28,7 +28,7 @@ Vue.filter('formattedDate', function (dateTimeString) {
 
 Vue.use(Vuetify, {
     theme: {
-        primary: 'black',
+        primary: '#000000',
         secondary: '#b0bec5',
         accent: '#8c9eff',
         error: '#b71c1c'

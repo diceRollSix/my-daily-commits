@@ -1,11 +1,18 @@
 <template>
-    <div>
-        <button
+    <v-fab-transition>
+        <v-btn
                 @click="loadUserCommitSourceData"
                 :disabled="loadingProcess"
-        >Load repos with token
-        </button>
-    </div>
+                color="orange"
+                dark
+                fab
+                fixed
+                bottom
+                right
+        >
+            <v-icon>cloud_download</v-icon>
+        </v-btn>
+    </v-fab-transition>
 </template>
 
 <script>
