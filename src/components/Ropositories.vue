@@ -1,29 +1,58 @@
 <template>
-    <div class="repositories">
+    <div>
         <div
                 v-for="repo in repositories"
                 v-show="showRepository(repo)"
                 :key="repo.id"
-        >{{ repo.name }}
-            <div
-                    v-for="branch in repo.branches"
-                    v-show="showSource(branch)"
-                    class="branch"
-            >{{ branch.name }} <span v-if="branch.hasDuplicateCommits">(With Duplication)</span>
-                <commits :commits="branch.commits"/>
-            </div>
-            <div
+        >
+            <v-widget :title="repo.name">
+                <div slot="widget-content">
+                    <v-list>
+                        <v-list-group
+                                v-for="branch in repo.branches"
+                                v-show="showSource(branch)"
+                                :key="branch.name"
+                                no-action
+                        >
+                            <v-list-tile slot="activator">
+                                <v-list-tile-content>
+                                    <v-list-tile-title>
+                                        {{ branch.name }}
+                                        <span v-if="branch.hasDuplicateCommits">(With Duplication)</span>
+                                    </v-list-tile-title>
+                                </v-list-tile-content>
+                            </v-list-tile>
+                            <commits :commits="branch.commits"/>
+                        </v-list-group>
+                    </v-list>
+                </div>
+            </v-widget>
+
+            <v-widget
+                    title="PullRequests"
                     v-show="showPullRequestsTitle(repo.pullRequests)"
-                    class="pull_request_title"
-            >PullRequests
-            </div>
-            <div
-                    v-for="pullRequest in repo.pullRequests"
-                    v-show="showSource(pullRequest)"
-                    class="pull_request"
-            >{{ pullRequest.title }} <span v-if="pullRequest.hasDuplicateCommits">(With Duplication)</span>
-                <commits :commits="pullRequest.commits"/>
-            </div>
+            >
+                <div slot="widget-content">
+                    <v-list>
+                        <v-list-group
+                                v-for="pullRequest in repo.pullRequests"
+                                v-show="showSource(pullRequest)"
+                                :key="pullRequest.title"
+                                no-action
+                        >
+                            <v-list-tile slot="activator">
+                                <v-list-tile-content>
+                                    <v-list-tile-title>
+                                        {{ pullRequest.title }}
+                                        <span v-if="pullRequest.hasDuplicateCommits">(With Duplication)</span>
+                                    </v-list-tile-title>
+                                </v-list-tile-content>
+                            </v-list-tile>
+                            <commits :commits="pullRequest.commits"/>
+                        </v-list-group>
+                    </v-list>
+                </div>
+            </v-widget>
         </div>
     </div>
 </template>
@@ -31,10 +60,11 @@
 <script>
     import {mapState} from 'vuex'
     import Commits from "./Commits";
+    import VWidget from "./util/VWidget";
 
     export default {
         name: 'repositories',
-        components: {Commits},
+        components: {VWidget, Commits},
         computed: {
             ...mapState({
                 repositories: state => state.repositories.repositories,
@@ -102,24 +132,3 @@
         }
     }
 </script>
-
-<style>
-    .repositories {
-        height: 700px;
-        overflow-y: scroll;
-    }
-
-    .branch {
-        margin-left: 20px;
-    }
-
-    .pull_request {
-        margin-left: 25px;
-    }
-
-    .pull_request_title {
-        margin-left: 25px;
-        color: red;
-    }
-
-</style>
