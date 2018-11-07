@@ -13,6 +13,7 @@
                                 v-show="showSource(branch)"
                                 :key="branch.name"
                                 no-action
+                                sub-group
                         >
                             <v-list-tile slot="activator">
                                 <v-list-tile-content>
@@ -29,7 +30,7 @@
             </v-widget>
 
             <v-widget
-                    title="PullRequests"
+                    :title="repo.name + ' (PullRequests)'"
                     v-show="showPullRequestsTitle(repo.pullRequests)"
             >
                 <div slot="widget-content">
@@ -38,6 +39,7 @@
                                 v-for="pullRequest in repo.pullRequests"
                                 v-show="showSource(pullRequest)"
                                 :key="pullRequest.title"
+                                sub-group
                                 no-action
                         >
                             <v-list-tile slot="activator">
