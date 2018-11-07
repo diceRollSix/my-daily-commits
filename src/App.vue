@@ -8,9 +8,9 @@
                 app
         >
             <v-toolbar-title>My Daily Commits</v-toolbar-title>
-
+            <v-spacer></v-spacer>
+            <user-name/>
             <user-avatar/>
-
         </v-toolbar>
         <v-content>
             <v-container fluid fill-height>
@@ -42,16 +42,18 @@
     import AppSettings from "./components/AppSettings";
     import Loading from "./components/Loading";
     import Errors from "./components/Errors";
-    import UserAvatar from "./components/UserData";
     import SelectedSinceUntilDate from "./components/SelectedSinceUntilDate";
+    import UserName from "./components/UserData/UserName";
+    import UserAvatar from "./components/UserData/UserAvatar";
 
 
     export default {
         name: 'app',
         store,
         components: {
-            SelectedSinceUntilDate,
             UserAvatar,
+            UserName,
+            SelectedSinceUntilDate,
             Errors,
             Loading,
             AppSettings,

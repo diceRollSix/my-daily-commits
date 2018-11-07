@@ -18,8 +18,10 @@ let loadingProcessCount = 0;
 
 export default {
     state: {
-        user: '',
+        login: '',
+        name: '',
         avatarUrl: '',
+        url: '',
         repositories: {},
         selectedDateType: null,
 
@@ -30,9 +32,11 @@ export default {
         selectDateType(state, dateType) {
             state.selectedDateType = dateType;
         },
-        setUser(state, {login, avatarUrl}) {
-            state.user = login;
+        setUser(state, {login, avatarUrl, url, name}) {
+            state.login = login;
+            state.name = name;
             state.avatarUrl = avatarUrl;
+            state.url = url;
         },
         setLoadingProcess(state, status) {
             state.loadingProcess = status;
@@ -155,7 +159,7 @@ export default {
                 return;
             }
 
-            const query = '{ viewer { login avatarUrl name repositories(first: 20) { totalCount edges { node { nameWithOwner isPrivate refs(first: 20, refPrefix: "refs/heads/") { totalCount edges { node { name } } } pullRequests(states: MERGED, first: 30, orderBy:{field:UPDATED_AT, direction:DESC}) { edges { node { databaseId number title headRefOid mergedAt } } } } } } } }';
+            const query = '{ viewer { login avatarUrl url name repositories(first: 20) { totalCount edges { node { nameWithOwner isPrivate refs(first: 20, refPrefix: "refs/heads/") { totalCount edges { node { name } } } pullRequests(states: MERGED, first: 30, orderBy:{field:UPDATED_AT, direction:DESC}) { edges { node { databaseId number title headRefOid mergedAt } } } } } } } }';
 
             const data = {'query': query};
             const options = {
@@ -251,7 +255,7 @@ export default {
                 params: {
                     access_token: rootState.settings.token,
                     sha: sha,
-                    author: state.user,
+                    author: state.login,
                     since: getSinceDateFromDateType(rootState.settings.dateType),
                     until: getUntilDateFromDateType(rootState.settings.dateType),
                     per_page: 100
