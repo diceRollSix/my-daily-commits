@@ -1,5 +1,9 @@
 <template>
-    <div>{{dateSince | formattedDate}} - {{dateUntil | formattedDate}}</div>
+    <v-card>
+        <v-card-title primary-title>
+            {{dateSince | formattedDate}} - {{dateUntil | formattedDate}}
+        </v-card-title>
+    </v-card>
 </template>
 
 <script>

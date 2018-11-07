@@ -13,9 +13,8 @@
             <user-avatar/>
         </v-toolbar>
         <v-content>
-            <v-container fluid fill-height>
+            <v-container fluid>
                 <v-layout
-                        justify-center
                         align-center
                 >
                     <v-flex text-xs-center>
