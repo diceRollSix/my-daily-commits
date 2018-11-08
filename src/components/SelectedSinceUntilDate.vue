@@ -3,7 +3,7 @@
             v-if="this.selectedDateType"
     >
         <v-card-title primary-title>
-            {{dateSince | formattedDate}} - {{dateUntil | formattedDate}}
+            {{dateSince | formattedDate}} - {{dateUntil | formattedDate}} | {{ selectedDateTypeText }}
         </v-card-title>
     </v-card>
 
@@ -11,7 +11,7 @@
 
 <script>
     import {mapState} from 'vuex'
-    import {getSinceDateFromDateType, getUntilDateFromDateType} from './../helpers';
+    import {getSinceDateFromDateType, getUntilDateFromDateType, selectedDateTypeText} from './../helpers';
 
     export default {
         name: 'selected-since-until-date',
@@ -25,6 +25,9 @@
             },
             dateUntil: function () {
                 return getUntilDateFromDateType(this.selectedDateType);
+            },
+            selectedDateTypeText: function () {
+                return selectedDateTypeText(this.selectedDateType);
             }
         },
     }

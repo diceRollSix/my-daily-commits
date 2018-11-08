@@ -1,5 +1,8 @@
 <template>
-    <v-dialog v-model="appSettingsDialog" persistent max-width="600px">
+    <v-dialog
+            v-model="appSettingsDialog"
+            max-width="600px"
+    >
         <v-fab-transition
                 slot="activator"
         >

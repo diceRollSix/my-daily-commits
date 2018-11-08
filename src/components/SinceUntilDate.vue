@@ -1,13 +1,13 @@
 <template>
     <v-card>
         <v-card-title primary-title>
-            {{dateSince | formattedDate}} - {{dateUntil | formattedDate}}
+            {{dateSince | formattedDate}} - {{dateUntil | formattedDate}} | {{ selectedDateTypeText }}
         </v-card-title>
     </v-card>
 </template>
 
 <script>
-    import {getSinceDateFromDateType, getUntilDateFromDateType} from './../helpers';
+    import {getSinceDateFromDateType, getUntilDateFromDateType, selectedDateTypeText} from './../helpers';
 
     export default {
         name: 'since-until-date',
@@ -17,7 +17,11 @@
             },
             dateUntil: function () {
                 return getUntilDateFromDateType(this.$store.state.settings.dateType);
+            },
+            selectedDateTypeText: function () {
+                return selectedDateTypeText(this.$store.state.settings.dateType);
             }
+
         },
     }
 </script>

@@ -99,4 +99,22 @@ function getUntilDateFromDateType(dateType, returnDate) {
     return date.toISOString();
 }
 
-export {getSinceDateFromDateType, getUntilDateFromDateType, DATE_TYPE};
+function selectedDateTypeText(dateType) {
+    console.log(dateType);
+    switch (dateType) {
+        case DATE_TYPE.TODAY:
+            return 'Today';
+        case DATE_TYPE.LAST_FRIDAY:
+            return 'Last Friday';
+        case DATE_TYPE.YESTERDAY:
+            return 'Yesterday';
+        case DATE_TYPE.CURRENT_WEEK:
+            return 'Current Week';
+        case DATE_TYPE.PREVIOUS_WEEK:
+            return 'Previous Week';
+    }
+
+    return '';
+}
+
+export {getSinceDateFromDateType, getUntilDateFromDateType, DATE_TYPE, selectedDateTypeText};
