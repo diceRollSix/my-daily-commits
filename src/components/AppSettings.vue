@@ -29,6 +29,7 @@
 
             <display-settings/>
             <token/>
+            <since-until-date/>
             <choose-date-type/>
 
         </v-card>
@@ -39,6 +40,7 @@
     import Token from "./Token"
     import ChooseDateType from "./ChooseDateType";
     import DisplaySettings from "./DisplaySettings";
+    import SinceUntilDate from "./SinceUntilDate";
 
     export default {
         name: 'app-settings',
@@ -48,6 +50,7 @@
             }
         },
         components: {
+            SinceUntilDate,
             DisplaySettings,
             ChooseDateType,
             Token

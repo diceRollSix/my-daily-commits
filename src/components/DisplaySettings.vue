@@ -1,29 +1,36 @@
 <template>
-    <div>
-        <div>
-            <input type="checkbox" id="show_duplicated_commits" :disabled="loadingProcess" v-model="showDuplicatedCommits">
-            <label for="show_duplicated_commits">Show duplicated commits</label>
+    <v-widget title="Display Settings">
+        <div slot="widget-content">
+            <div class="basic">
+                <v-checkbox
+                        label="Show duplicated commits"
+                        :disabled="loadingProcess" v-model="showDuplicatedCommits">
+                    >
+                </v-checkbox>
+                <v-checkbox
+                        label="Show merge commits"
+                        :disabled="loadingProcess" v-model="showMergeCommits"
+                ></v-checkbox>
+                <v-checkbox
+                        label="Show empty sources"
+                        :disabled="loadingProcess" v-model="showEmptySources"
+                ></v-checkbox>
+                <v-checkbox
+                        label="Show empty repositories"
+                        :disabled="loadingProcess" v-model="showEmptyRepositories"
+                ></v-checkbox>
+            </div>
         </div>
-        <div>
-            <input type="checkbox" id="show_merge_commits" :disabled="loadingProcess" v-model="showMergeCommits">
-            <label for="show_merge_commits">Show merge commits</label>
-        </div>
-        <div>
-            <input type="checkbox" id="show_empty_sources" :disabled="loadingProcess" v-model="showEmptySources">
-            <label for="show_empty_sources">Show empty sources</label>
-        </div>
-        <div>
-            <input type="checkbox" id="show_empty_repositories" :disabled="loadingProcess" v-model="showEmptyRepositories">
-            <label for="show_empty_repositories">Show empty repositories</label>
-        </div>
-    </div>
+    </v-widget>
 </template>
 
 <script>
     import {mapState} from 'vuex'
+    import VWidget from "./util/VWidget";
 
     export default {
         name: 'display-settings',
+        components: {VWidget},
         computed: {
             ...mapState({
                 loadingProcess: state => state.repositories.loadingProcess

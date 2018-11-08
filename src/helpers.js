@@ -100,7 +100,6 @@ function getUntilDateFromDateType(dateType, returnDate) {
 }
 
 function selectedDateTypeText(dateType) {
-    console.log(dateType);
     switch (dateType) {
         case DATE_TYPE.TODAY:
             return 'Today';
