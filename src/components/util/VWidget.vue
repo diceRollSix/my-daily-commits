@@ -7,9 +7,9 @@
                 <slot name="widget-header-action"></slot>
             </v-toolbar>
             <v-divider v-if="enableHeader"></v-divider>
-            <v-card-text :class="contentBg">
+            <div :class="contentBg">
                 <slot name="widget-content"></slot>
-            </v-card-text>
+            </div>
         </v-card>
     </div>
 </template>

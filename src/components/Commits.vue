@@ -1,16 +1,13 @@
 <template>
     <div>
-        <v-list-tile
+        <v-card
                 v-for="commit in commits"
                 v-show="showCommit(commit)"
                 :key="commit.sha"
+                class="text-sm-left"
         >
-            <v-list-tile-content>
-                <v-list-tile-title>
-                    {{ commit.date | formattedDate }} {{ commit.message }} <a target="_blank" :href="commit.htmlUrl">{{ getSmallSha(commit.sha) }}</a>
-                </v-list-tile-title>
-            </v-list-tile-content>
-        </v-list-tile>
+            {{ commit.date | formattedDate }} {{ commit.message }} <a target="_blank" :href="commit.htmlUrl">{{ getSmallSha(commit.sha) }}</a>
+        </v-card>
     </div>
 </template>
 

@@ -15,14 +15,13 @@
         <v-content>
             <v-container fluid>
                 <v-layout
-                        align-center
+                        align-left
                 >
-                    <v-flex text-xs-center>
+                    <v-flex text-xs-left>
 
                         <loading/>
                         <errors/>
                         <selected-since-until-date/>
-
 
                         <repositories/>
                         <load-button/>
