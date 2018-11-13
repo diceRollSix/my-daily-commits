@@ -32,7 +32,7 @@
                 return this.showDuplicatedCommits || !commit.duplication;
             },
             getSmallSha: function (sha) {
-                return sha.slice(0, 8)
+                return typeof sha === 'string' ? sha.slice(0, 8) : '';
             }
         }
     }
