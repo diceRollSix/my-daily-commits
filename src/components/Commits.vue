@@ -6,7 +6,12 @@
                 :key="commit.sha"
                 class="text-sm-left"
         >
-            {{ commit.date | formattedDate }} {{ commit.message }} <a target="_blank" :href="commit.htmlUrl">{{ getSmallSha(commit.sha) }}</a>
+            <v-tooltip bottom>
+                <span slot="activator">{{ commit.date | shortDate }}</span>
+                <span>{{ commit.date | formattedDate }}</span>
+            </v-tooltip>
+            {{ commit.message }}
+            <a target="_blank" :href="commit.htmlUrl">{{ getSmallSha(commit.sha) }}</a>
         </v-card>
     </div>
 </template>
