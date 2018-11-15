@@ -4,7 +4,6 @@
                 color="primary"
                 dark
                 fixed
-
                 app
         >
             <v-toolbar-title>My Daily Commits</v-toolbar-title>
@@ -13,10 +12,8 @@
             <user-avatar/>
         </v-toolbar>
         <v-content>
-            <v-container fluid>
-                <v-layout
-                        align-left
-                >
+            <v-container fluid pa-0>
+                <v-layout align-left>
                     <v-flex text-xs-left>
 
                         <loading/>
@@ -43,7 +40,6 @@
     import SelectedSinceUntilDate from "./components/SelectedSinceUntilDate";
     import UserName from "./components/UserData/UserName";
     import UserAvatar from "./components/UserData/UserAvatar";
-
 
     export default {
         name: 'app',

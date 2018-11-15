@@ -4,14 +4,21 @@
                 v-for="commit in commits"
                 v-show="showCommit(commit)"
                 :key="commit.sha"
-                class="text-sm-left"
+                class="pl-4"
         >
-            <v-tooltip bottom>
-                <span slot="activator">{{ commit.date | shortDate }}</span>
-                <span>{{ commit.date | formattedDate }}</span>
-            </v-tooltip>
-            {{ commit.message }}
-            <a target="_blank" :href="commit.htmlUrl">{{ getSmallSha(commit.sha) }}</a>
+            <pre class="pl-1">{{ commit.message }}</pre>
+            <v-card-actions>
+                <v-tooltip bottom>
+                    <span class="pa-1" slot="activator">{{ commit.date | shortDate }}</span>
+                    <span>{{ commit.date | formattedDate }}</span>
+                </v-tooltip>
+                <v-btn
+                        flat
+                        small
+                        target="_blank"
+                        href="commit.htmlUrl"
+                >{{ getSmallSha(commit.sha) }}</v-btn>
+            </v-card-actions>
         </v-card>
     </div>
 </template>
@@ -44,10 +51,3 @@
         }
     }
 </script>
-
-<style>
-    .commit {
-        margin-left: 40px;
-    }
-
-</style>

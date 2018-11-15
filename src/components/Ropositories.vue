@@ -13,13 +13,15 @@
                                 v-show="showSource(branch)"
                                 :key="branch.name"
                                 no-action
-                                sub-group
+                                lazy
                         >
                             <v-list-tile slot="activator">
                                 <v-list-tile-content>
                                     <v-list-tile-title>
                                         {{ branch.name }}
-                                        <span v-if="branch.hasDuplicateCommits">(With Duplication)</span>
+                                        <span v-if="branch.hasDuplicateCommits">
+                                            <v-icon>file_copy</v-icon>
+                                        </span>
                                     </v-list-tile-title>
                                 </v-list-tile-content>
                             </v-list-tile>
@@ -39,14 +41,16 @@
                                 v-for="pullRequest in repo.pullRequests"
                                 v-show="showSource(pullRequest)"
                                 :key="pullRequest.title"
-                                sub-group
                                 no-action
+                                lazy
                         >
                             <v-list-tile slot="activator">
                                 <v-list-tile-content>
                                     <v-list-tile-title>
                                         {{ pullRequest.title }}
-                                        <span v-if="pullRequest.hasDuplicateCommits">(With Duplication)</span>
+                                        <span v-if="pullRequest.hasDuplicateCommits">
+                                            <v-icon>file_copy</v-icon>
+                                        </span>
                                     </v-list-tile-title>
                                 </v-list-tile-content>
                             </v-list-tile>
