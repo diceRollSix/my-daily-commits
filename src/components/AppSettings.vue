@@ -12,7 +12,8 @@
                     fab
                     fixed
                     bottom
-                    left
+                    right
+                    id="settings-button"
             >
                 <v-icon>settings</v-icon>
             </v-btn>
@@ -24,13 +25,14 @@
                     <v-icon>close</v-icon>
                 </v-btn>
                 <v-toolbar-title>Settings</v-toolbar-title>
-                <v-spacer></v-spacer>
             </v-toolbar>
 
-            <display-settings/>
-            <token/>
-            <since-until-date/>
-            <choose-date-type/>
+            <div>
+                <display-settings/>
+                <token/>
+                <since-until-date/>
+                <choose-date-type/>
+            </div>
 
         </v-card>
     </v-dialog>
@@ -59,4 +61,7 @@
 </script>
 
 <style>
+    #settings-button.v-btn--bottom:not(.v-btn--absolute) {
+        bottom: 90px;
+    }
 </style>

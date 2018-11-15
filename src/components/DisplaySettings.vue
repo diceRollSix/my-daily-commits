@@ -1,7 +1,7 @@
 <template>
     <v-widget title="Display Settings">
         <div slot="widget-content">
-            <div class="basic">
+            <div class="basic pa-2">
                 <v-checkbox
                         label="Show duplicated commits"
                         :disabled="loadingProcess" v-model="showDuplicatedCommits">

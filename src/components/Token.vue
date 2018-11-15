@@ -1,7 +1,7 @@
 <template>
     <v-widget :enableHeader="false">
         <div slot="widget-content">
-            <div class="basic">
+            <div class="basic pa-2">
                 <v-subheader class="pa-0">{{ token }}</v-subheader>
                 <v-text-field
                         label="GitHub token"

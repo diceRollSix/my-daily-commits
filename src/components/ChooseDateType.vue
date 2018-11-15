@@ -1,8 +1,8 @@
 <template>
 
-    <v-widget title="Date Period">
+    <v-widget title="Date Period" >
         <div slot="widget-content">
-            <div class="basic">
+            <div class="basic pa-2">
                 <v-radio-group v-model="dateType">
                     <v-radio label="Previous Week"
                              color="info"

@@ -1,5 +1,5 @@
 <template>
-    <v-card>
+    <v-card class="pa-2">
         <v-card-title primary-title>
             {{dateSince | formattedDate}} - {{dateUntil | formattedDate}} | {{ selectedDateTypeText }}
         </v-card-title>
