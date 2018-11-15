@@ -17,12 +17,23 @@
                         >
                             <v-list-tile slot="activator">
                                 <v-list-tile-content>
-                                    <v-list-tile-title>
-                                        {{ branch.name }}
-                                        <span v-if="branch.hasDuplicateCommits">
-                                            <v-icon>file_copy</v-icon>
-                                        </span>
-                                    </v-list-tile-title>
+
+                                    <v-badge
+                                            color="orange"
+                                            right
+                                    >
+                                        <v-icon
+                                                slot="badge"
+                                                dark
+                                                small
+                                                v-if="branch.hasDuplicateCommits"
+                                        >file_copy
+                                        </v-icon>
+                                        <v-list-tile-title>
+                                            {{ branch.name }}
+                                        </v-list-tile-title>
+                                    </v-badge>
+
                                 </v-list-tile-content>
                             </v-list-tile>
                             <commits :commits="branch.commits"/>
@@ -46,12 +57,23 @@
                         >
                             <v-list-tile slot="activator">
                                 <v-list-tile-content>
-                                    <v-list-tile-title>
-                                        {{ pullRequest.title }}
-                                        <span v-if="pullRequest.hasDuplicateCommits">
-                                            <v-icon>file_copy</v-icon>
-                                        </span>
-                                    </v-list-tile-title>
+
+                                    <v-badge
+                                            color="orange"
+                                            right
+                                    >
+                                        <v-icon
+                                                slot="badge"
+                                                dark
+                                                small
+                                                v-if="pullRequest.hasDuplicateCommits"
+                                        >file_copy
+                                        </v-icon>
+                                        <v-list-tile-title>
+                                            {{ pullRequest.title }}
+                                        </v-list-tile-title>
+                                    </v-badge>
+
                                 </v-list-tile-content>
                             </v-list-tile>
                             <commits :commits="pullRequest.commits"/>

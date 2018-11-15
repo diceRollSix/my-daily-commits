@@ -31,7 +31,7 @@
 </template>
 
 <script>
-    import Repositories from "./components/Ropositories";
+    import Repositories from "./components/Repositories";
     import store from "./store/";
     import LoadButton from "./components/LoadButton";
     import AppSettings from "./components/AppSettings";
