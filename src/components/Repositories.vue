@@ -5,82 +5,77 @@
                 v-show="showRepository(repo)"
                 :key="repo.id"
         >
-            <v-widget :title="repo.name">
-                <div slot="widget-content">
-                    <v-list>
-                        <v-list-group
-                                v-for="branch in repo.branches"
-                                v-show="showSource(branch)"
-                                :key="branch.name"
-                                no-action
-                                lazy
+            <v-subheader>{{ repo.name }}</v-subheader>
+            <v-list>
+                <v-list-group
+                        v-for="branch in repo.branches"
+                        v-show="showSource(branch)"
+                        :key="branch.name"
+                        no-action
+                        lazy
+                >
+                    <v-list-tile slot="activator">
+                        <v-list-tile-content
+                                overflow-hidden
                         >
-                            <v-list-tile slot="activator">
-                                <v-list-tile-content>
 
-                                    <v-badge
-                                            color="orange"
-                                            right
-                                    >
-                                        <v-icon
-                                                slot="badge"
-                                                dark
-                                                small
-                                                v-if="branch.hasDuplicateCommits"
-                                        >file_copy
-                                        </v-icon>
-                                        <v-list-tile-title>
-                                            {{ branch.name }}
-                                        </v-list-tile-title>
-                                    </v-badge>
+                            <v-badge
+                                    color="orange"
+                                    right
+                            >
+                                <v-icon
+                                        slot="badge"
+                                        dark
+                                        small
+                                        v-if="branch.hasDuplicateCommits"
+                                >file_copy
+                                </v-icon>
+                                <v-list-tile-title>
+                                    {{ branch.name }}
+                                </v-list-tile-title>
+                            </v-badge>
 
-                                </v-list-tile-content>
-                            </v-list-tile>
-                            <commits :commits="branch.commits"/>
-                        </v-list-group>
-                    </v-list>
-                </div>
-            </v-widget>
+                        </v-list-tile-content>
+                    </v-list-tile>
+                    <commits :commits="branch.commits"/>
+                </v-list-group>
+            </v-list>
 
-            <v-widget
-                    :title="repo.name + ' (PullRequests)'"
+            <v-subheader
                     v-show="showPullRequestsTitle(repo.pullRequests)"
-            >
-                <div slot="widget-content">
-                    <v-list>
-                        <v-list-group
-                                v-for="pullRequest in repo.pullRequests"
-                                v-show="showSource(pullRequest)"
-                                :key="pullRequest.title"
-                                no-action
-                                lazy
-                        >
-                            <v-list-tile slot="activator">
-                                <v-list-tile-content>
+            >{{ repo.name + ' (PullRequests)' }}
+            </v-subheader>
+            <v-list>
+                <v-list-group
+                        v-for="pullRequest in repo.pullRequests"
+                        v-show="showSource(pullRequest)"
+                        :key="pullRequest.title"
+                        no-action
+                >
+                    <v-list-tile slot="activator">
+                        <v-list-tile-content>
 
-                                    <v-badge
-                                            color="orange"
-                                            right
-                                    >
-                                        <v-icon
-                                                slot="badge"
-                                                dark
-                                                small
-                                                v-if="pullRequest.hasDuplicateCommits"
-                                        >file_copy
-                                        </v-icon>
-                                        <v-list-tile-title>
-                                            {{ pullRequest.title }}
-                                        </v-list-tile-title>
-                                    </v-badge>
+                            <v-badge
+                                    color="orange"
+                                    right
+                            >
+                                <v-icon
+                                        slot="badge"
+                                        dark
+                                        small
+                                        v-if="pullRequest.hasDuplicateCommits"
+                                >file_copy
+                                </v-icon>
+                                <v-list-tile-title>
+                                    {{ pullRequest.title }}
+                                </v-list-tile-title>
+                            </v-badge>
 
-                                </v-list-tile-content>
-                            </v-list-tile>
-                            <commits :commits="pullRequest.commits"/>
-                        </v-list-group>
-                    </v-list>
-                </div>
-            </v-widget>
+                        </v-list-tile-content>
+                    </v-list-tile>
+                    <commits :commits="pullRequest.commits"/>
+                </v-list-group>
+            </v-list>
         </div>
     </div>
 </template>

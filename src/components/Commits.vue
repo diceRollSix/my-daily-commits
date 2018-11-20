@@ -1,25 +1,32 @@
 <template>
     <div>
-        <v-card
+        <v-layout
                 v-for="commit in commits"
                 v-show="showCommit(commit)"
                 :key="commit.sha"
                 class="pl-4"
+                row
+                wrap
         >
-            <pre class="pl-1">{{ commit.message }}</pre>
-            <v-card-actions>
+            <v-flex d-flex xs12 sm2>
                 <v-tooltip bottom>
                     <span class="pa-1" slot="activator">{{ commit.date | shortDate }}</span>
                     <span>{{ commit.date | formattedDate }}</span>
                 </v-tooltip>
+            </v-flex>
+            <v-flex d-flex xs12 sm8>
+                {{ getShortCommitMessage(commit.message)}}
+            </v-flex>
+            <v-flex d-flex xs12 sm2>
                 <v-btn
                         flat
                         small
                         target="_blank"
                         href="commit.htmlUrl"
-                >{{ getSmallSha(commit.sha) }}</v-btn>
-            </v-card-actions>
-        </v-card>
+                >{{ getSmallSha(commit.sha) }}
+                </v-btn>
+            </v-flex>
+        </v-layout>
     </div>
 </template>
 
