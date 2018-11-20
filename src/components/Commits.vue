@@ -4,7 +4,10 @@
                 v-for="commit in commits"
                 v-show="showCommit(commit)"
                 class="commit"
-        >{{ commit.date | formattedDate }} {{ commit.message }} <a target="_blank" :href="commit.htmlUrl">{{ getSmallSha(commit.sha) }}</a>
+        >
+            <div>{{ commit.date | formattedDate }}</div>
+            <div>{{ getShortCommitMessage(commit.message) }}</div>
+            <a target="_blank" :href="commit.htmlUrl">{{ getSmallSha(commit.sha) }}</a>
         </div>
     </div>
 </template>
@@ -33,7 +36,18 @@
             },
             getSmallSha: function (sha) {
                 return typeof sha === 'string' ? sha.slice(0, 8) : '';
-            }
+            },
+            getShortCommitMessage: (message) => {
+                if (typeof message !== 'string') {
+                    return '';
+                }
+
+                const eolIndex = message.indexOf("\n");
+
+                return eolIndex === -1
+                    ? message
+                    : message.substr(0, eolIndex);
+            },
         }
     }
 </script>
