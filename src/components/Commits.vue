@@ -47,7 +47,18 @@
             },
             getSmallSha: function (sha) {
                 return typeof sha === 'string' ? sha.slice(0, 8) : '';
-            }
+            },
+            getShortCommitMessage: (message) => {
+                if (typeof message !== 'string') {
+                    return '';
+                }
+
+                const eolIndex = message.indexOf("\n");
+
+                return eolIndex === -1
+                    ? message
+                    : message.substr(0, eolIndex);
+            },
         }
     }
 </script>
