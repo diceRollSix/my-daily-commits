@@ -8,16 +8,16 @@
                 row
                 wrap
         >
-            <v-flex d-flex xs12 sm2>
+            <v-flex d-flex xs12 sm8 class="pa-2">
+                {{ getShortCommitMessage(commit.message)}}
+            </v-flex>
+            <v-flex d-flex xs6 sm2>
                 <v-tooltip bottom>
                     <span class="pa-1" slot="activator">{{ commit.date | shortDate }}</span>
                     <span>{{ commit.date | formattedDate }}</span>
                 </v-tooltip>
             </v-flex>
-            <v-flex d-flex xs12 sm8>
-                {{ getShortCommitMessage(commit.message)}}
-            </v-flex>
-            <v-flex d-flex xs12 sm2>
+            <v-flex d-flex xs6 sm2>
                 <v-btn
                         flat
                         small

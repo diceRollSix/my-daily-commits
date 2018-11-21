@@ -12,20 +12,18 @@
             <user-avatar/>
         </v-toolbar>
         <v-content>
-            <v-container fluid pa-0>
-                <v-layout align-left>
-                    <v-flex text-xs-left>
+            <v-layout align-left>
+                <v-flex xs12 text-xs-left>
 
-                        <loading/>
-                        <errors/>
-                        <selected-since-until-date/>
+                    <loading/>
+                    <errors/>
+                    <selected-since-until-date/>
 
-                        <repositories/>
-                        <load-button/>
-                        <app-settings/>
-                    </v-flex>
-                </v-layout>
-            </v-container>
+                    <repositories/>
+                    <load-button/>
+                    <app-settings/>
+                </v-flex>
+            </v-layout>
         </v-content>
     </v-app>
 </template>
