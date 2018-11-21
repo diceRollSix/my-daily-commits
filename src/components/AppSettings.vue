@@ -2,6 +2,7 @@
     <v-dialog
             v-model="appSettingsDialog"
             max-width="600px"
+            scrollable
     >
         <v-fab-transition
                 slot="activator"
@@ -27,12 +28,16 @@
                 <v-toolbar-title>Settings</v-toolbar-title>
             </v-toolbar>
 
-            <div>
+            <v-card-text>
                 <display-settings/>
                 <token/>
                 <since-until-date/>
                 <choose-date-type/>
-            </div>
+            </v-card-text>
+
+            <v-card-actions>
+                <v-btn flat @click="appSettingsDialog = false">Close</v-btn>
+            </v-card-actions>
 
         </v-card>
     </v-dialog>

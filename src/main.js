@@ -31,7 +31,7 @@ Vue.filter('shortDate', function (dateTimeString) {
     const date = new Date(dateTimeString);
 
     const dayDiff = (new Date()).getDate() - date.getDate();
-    if (dayDiff > 1) {
+    if (dayDiff >= 1) {
         return dayDiff + ' day' + (dayDiff === 1 ? '' : 's') + ' ago';
     }
 
