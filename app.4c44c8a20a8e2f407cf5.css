@@ -1,6 +1,4 @@
-#settings-button.v-btn--bottom:not(.v-btn--absolute){bottom:90px}.error{color:#8b0000;font-size:22px;font-weight:700}
-
-
+.list-group-tile{width:100%;display:flex;align-items:flex-start;justify-content:center;flex-direction:column;padding:10px 30px 10px 15px}#settings-button.v-btn--bottom:not(.v-btn--absolute){bottom:90px}.error{color:#8b0000;font-size:22px;font-weight:700}
 
 
 
